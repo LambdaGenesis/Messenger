@@ -1,0 +1,46 @@
+{{ define "footer" }}
+
+<link rel="stylesheet" href="/static/styles.css">
+<div class="footer">
+    <div class="line-footer"></div>
+
+    <div class="footer-text">
+        <div class="cols">
+            <div class="col-left">
+                <p>Контакты:</p>
+                <ul>
+                    <li>akhmetzyanovamir2006@gmail.com</li>
+                    <li>7(950)309-06-21</li>
+                </ul>
+            </div>
+
+            <div class="col-right">
+                 <ul>
+                    <li>Главная страница</li>
+                    <li>Помощь</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .cols{
+        display: flex;
+        flex: 1 ;
+        margin-top: 80px;
+    }
+    .col-right{
+        margin-left: 500px;
+    }
+    .col-left{
+        margin-left: 30px;
+    }
+</style>
+
+</body>
+
+</html>
+
+{{ end }}
