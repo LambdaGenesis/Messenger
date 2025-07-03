@@ -5,11 +5,36 @@
 
 <link rel="stylesheet" href="/static/styles.css">
 <body>
-    <p>It is Home page, made by Amir</p>
-    <a href="/auth">Выйти</a>
-    <a href="/main">Главная страница</a>
+    <div class="home-text">
+        <div class="urls">
+            <div class="main-col">
+                <div class="col-left"><a href="/auth">Выйти</a></div>
+                <div class="col-right"><a href="/main">Главная страница</a></div>
+            </div>
+        </div>
+    </div>
 </body>
 </header>
+
+<style> 
+    .home-text{
+        color: white;
+        text-align: center;
+        text-shadow: 0 0 3px;
+        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    }
+    .main-col{
+        display: flex;
+        flex: 1;
+    }
+    .col-left{
+        margin-right: 400px;
+    }
+    .col-right{
+        margin-left: 20px;
+    }
+</style>
+
 
 {{ template "footer" }}
 

@@ -3,91 +3,82 @@ package main
 import (
 	"html/template"
 	"net/http"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"io"
+	"log"
 )
 
-func homePage(w http.ResponseWriter, r *http.Request){
-	tmpl, err := template.ParseFiles("templates/home_page.html", "templates/header.html", "templates/footer.html")
-	if err != nil{
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.ExecuteTemplate(w, "home_page", nil)
-	if err != nil{
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+type Template struct{
+	templates *template.Template
 }
 
-func mainPage(w http.ResponseWriter, r *http.Request){
-	tmpl, err := template.ParseFiles("templates/main_page.html", "templates/header.html", "templates/footer.html")
-	if err != nil{
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.ExecuteTemplate(w, "main_page", nil)
-	if err != nil{
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func showAuthPage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Redirect(w, r, "/auth", http.StatusSeeOther)
-		return
-	}
-
-	tmpl, err := template.ParseFiles("templates/auth_page.html", "templates/footer.html", "templates/header.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.ExecuteTemplate(w, "auth_page", nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func authPage(w http.ResponseWriter, r *http.Request){
-	if r.Method != http.MethodPost {
-        http.Redirect(w, r, "/auth", http.StatusFound)
-        return
-    }
-
-	username := r.FormValue("username")
-	password := r.FormValue("password")
-
-	tmpl, err := template.ParseFiles("templates/auth_page.html", "templates/footer.html", "templates/header.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	
-	if username == "aaa" && password == "aaa"{
-		http.Redirect(w, r, "/home", http.StatusFound)
-		return
-	}
-	data := struct{ Error string }{Error: "Неверный логин или пароль"}
-
-	err = tmpl.ExecuteTemplate(w, "auth_page", data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func HandleRequests(){
-	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
-
-	
-	http.HandleFunc("/", mainPage)
-	http.HandleFunc("/auth", showAuthPage)
-	http.HandleFunc("/auth/post", authPage)
-	http.HandleFunc("/home", homePage)
-	http.ListenAndServe(":8080", nil)
+func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error{
+	return t.templates.ExecuteTemplate(w, name, data)
 }
 
 func main(){
 	HandleRequests()
+}
+
+func HandleRequests(){
+	e := echo.New()
+	
+	e.Use(middleware.Logger()) // creating a middleware for a programm
+	e.Use(middleware.Recover())
+	
+	e.Static("/static", "static") // creating static files 
+
+	templates, err := template.ParseFiles(
+		"templates/footer.html",
+	    "templates/header.html",
+	    "templates/main_page.html",
+	    "templates/auth_page.html",
+	    "templates/home_page.html",
+	)
+	if err != nil {
+		log.Fatalf("Ошибка загрузки шаблонов: %v", err)
+	}
+	e.Renderer = &Template{templates: templates}
+	
+	e.GET("/", mainPage)
+	e.GET("/home", homePage)
+	e.GET("/auth", showAuthPage)
+	e.POST("/auth/post", authPage)
+	
+	e.Logger.Fatal(e.Start(":8080"))
+}
+
+func homePage(c echo.Context) error{
+	return c.Render(http.StatusOK, "home_page.html", map[string]interface{}{
+		"Title": "Домашняя страница",
+	})
+}
+
+func mainPage(c echo.Context) error{
+	return c.Render(http.StatusOK, "main_page.html", map[string]interface{}{
+		"Title": "Главная страница",
+	})
+}
+
+func showAuthPage(c echo.Context) error {
+	 return c.Render(http.StatusOK, "auth_page.html", map[string]interface{}{
+        "Title": "Авторизация",
+        "Error": "", // Добавляем пустую ошибку для шаблона
+    })
+}
+
+func authPage(c echo.Context) error{
+	if c.Request().Method != http.MethodPost {
+        return c.Redirect(http.StatusFound, "/auth")
+    }
+
+	username := c.FormValue("username")
+	password := c.FormValue("password")
+
+	if username == "aaa" && password == "aaa"{
+		return c.Redirect(http.StatusFound, "/home")
+	}
+	data := struct{ Error string }{Error: "Неверный логин или пароль"}
+	return c.Render(http.StatusOK, "auth_page.html", data)
 }
