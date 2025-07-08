@@ -50,21 +50,21 @@ func HandleRequests(){
 }
 
 func homePage(c echo.Context) error{
-	return c.Render(http.StatusOK, "home_page.html", map[string]interface{}{
+	return c.Render(http.StatusOK, "home_page", map[string]interface{}{
 		"Title": "Домашняя страница",
 	})
 }
 
 func mainPage(c echo.Context) error{
-	return c.Render(http.StatusOK, "main_page.html", map[string]interface{}{
+	return c.Render(http.StatusOK, "main_page", map[string]interface{}{
 		"Title": "Главная страница",
 	})
 }
 
 func showAuthPage(c echo.Context) error {
-	 return c.Render(http.StatusOK, "auth_page.html", map[string]interface{}{
+	 return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
         "Title": "Авторизация",
-        "Error": "", // Добавляем пустую ошибку для шаблона
+        "Error": "", // addde empty error for a template
     })
 }
 
@@ -80,5 +80,5 @@ func authPage(c echo.Context) error{
 		return c.Redirect(http.StatusFound, "/home")
 	}
 	data := struct{ Error string }{Error: "Неверный логин или пароль"}
-	return c.Render(http.StatusOK, "auth_page.html", data)
+	return c.Render(http.StatusOK, "auth_page", data)
 }
