@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"html/template"
-	"net/http"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"io"
 	"log"
+	"net/http"
+
+	"github.com/jackc/pgx/v4"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type Template struct{
@@ -81,4 +84,18 @@ func authPage(c echo.Context) error{
 	}
 	data := struct{ Error string }{Error: "Неверный логин или пароль"}
 	return c.Render(http.StatusOK, "auth_page", data)
+}
+
+func databaseSQL(username string, password string){
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
+	if err != nil{
+		panic(err)
+	}
+	defer conn.Close(context.Background())
+
+	_, err = conn.Exec(context.Background(), "INSERT INTO data_user (username, password) VALUES ($1, $2)", username, password) // нужнот закинуть переменные, получаемые из строки в странице авторизации 
+	if err != nil{
+		log.Fatal(err)
+	}
+
 }
