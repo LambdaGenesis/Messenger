@@ -2,33 +2,32 @@ body {
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     font-size: 30px;
     font-weight: 300;
-    background-color: rgb(102, 102, 135);
+    background-color: rgb(35, 35, 35);
 }
 
-.header{
-    background-color: rgb(80, 65, 105);
+.header-main{
+    background-color: rgb(50, 50, 50);
+    width: 100%;
+    padding-top: 3%;
+    
 }
 
 .header-text{
-    margin-left: 80px;
-    font-size: 60px;
-    color: white;
-    text-shadow: 0 0 5px;
+    margin-left: 90px;
+    font-size: 65px;
+    color: rgb(228, 228, 228);
+    text-shadow: 0 0 4px;
+    padding-bottom: 1px;
+    margin-bottom: 40px;
+    
 }   
-
-.header-line{
-    border-bottom: 3px solid;
-    color: white;
-    width: 100%;
-     margin-bottom: 50px;
-}
 
 .ver-text {
     border-radius: 20px;
     border-style: double;
     border-color: black;
     border-width: 10px;
-    background-color: rgb(27, 50, 50);
+    background-color: rgb(70, 70, 70);
     color: white;
     text-shadow: 0 0 2px;
     text-align: center;
@@ -40,17 +39,29 @@ body {
     
 }
 
+.home-container{
+    margin-right: 200px;
+}
+
+.home-text{
+    color: rgb(237, 236, 236);
+    text-shadow: 0 0 4px;
+    text-align: center;
+    font-family: sans-serif;
+}
+
 
 .footer{
     height: 300px;
     margin-top: 100px; 
-    background-color: rgb(80, 65, 105);
+    background-color: rgb(50, 50, 50);
     text-shadow: 0 0 3px;
     color:white;
+    ;
 }
 .line-footer{
     border-bottom: 3px solid;
     color: white;
-    
+    box-shadow: 0 0 15px;
     
 }

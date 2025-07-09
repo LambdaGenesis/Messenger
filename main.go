@@ -35,6 +35,7 @@ func HandleRequests(){
 	templates, err := template.ParseFiles(
 		"templates/footer.html",
 	    "templates/header.html",
+		"templates/side_bar.html",
 	    "templates/main_page.html",
 	    "templates/auth_page.html",
 	    "templates/home_page.html",
@@ -67,7 +68,7 @@ func mainPage(c echo.Context) error{
 func showAuthPage(c echo.Context) error {
 	 return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
         "Title": "Авторизация",
-        "Error": "", // addde empty error for a template
+        "Error": "", // added empty error for a template
     })
 }
 
@@ -78,6 +79,8 @@ func authPage(c echo.Context) error{
 
 	username := c.FormValue("username")
 	password := c.FormValue("password")
+
+	// databaseSQL(username, password)
 
 	if username == "aaa" && password == "aaa"{
 		return c.Redirect(http.StatusFound, "/home")

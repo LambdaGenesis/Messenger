@@ -1,0 +1,37 @@
+{{ define "side_bar" }}
+
+<link rel="stylesheet" href="/static/styles.css">
+
+<div class="sidenav">
+  <a href="/auth">Authorization</a>
+  <a href="/">Main</a>
+  <a href="/contacts">Contacts</a>
+  <a href="/about">About</a>
+</div>
+
+<style>
+    .sidenav {
+        height: 100%; /* Full-height: remove this if you want "auto" height */
+        width: 190px; /* Set the width of the sidebar */
+        position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+        z-index: 2000; /* Stay on top */
+        top: 0; /* Stay at the top */
+        left: 0;
+        background-color: #111; /* Black */
+        overflow-x: hidden; /* Disable horizontal scroll */
+        padding-top: 90px;
+        margin-left: 85%;
+    }
+    .sidenav a {
+        padding: 6px 8px 6px 16px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+    }
+    .sidenav a:hover {
+        color: #f1f1f1;
+    }
+</style>
+
+{{ end }}

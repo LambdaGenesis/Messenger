@@ -1,16 +1,20 @@
 {{ define "main_page" }}
-
-
 {{ template "header" }}
+{{ template "side_bar"}}
 
 <link rel="stylesheet" href="/static/styles.css">
 <body>
-    <p>The main page!</p>
-    <a href="/auth">Выйти</a>
+    <div class="main-main">
+        <div class="main-text">  
+                    Мгновенные сообщения, голосовые и видеозвонки — всё в одном приложении. Подключайтесь к друзьям, семье и коллегам без границ!
+                
+        </div>
+    </div> 
+
+
 </body>
 </header>
 
+
 {{ template "footer" }}
-
-
 {{ end }}

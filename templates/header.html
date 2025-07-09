@@ -7,17 +7,31 @@
 
 <title>Messanger</title>
 
-<header class="header">
-    <div class="header-line"></div>
+<header class="header-main">
+    <!-- <div class="header-line"></div> -->
     <div class="header-text">    
-        <p class="text-inside-header"> Genesis </p>
+        <div class="header-cols">
+            <div class="header-cols-right"><img src="static\photos\channels4_profile.svg" width="120px"></div>
+
+            <div class="header-cols-left"><h3 class="text-inside-header">Genesis</h3></div>
+        </div>
     </div>
     <div class="header-line"></div>
-    
-
-
 </header>
 
 
+<style>
+    .header-cols{
+        display: flex;
+        flex: 1;
+    }
+    .header-cols-right{
+        margin-right: 50px;
+        padding-top: 65px;
+    }
+    .header-cols-left{
+        margin-left: 0px;
+    }
+</style>
 
 {{ end }}
