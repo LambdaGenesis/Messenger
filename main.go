@@ -39,6 +39,7 @@ func HandleRequests(){
 	    "templates/main_page.html",
 	    "templates/auth_page.html",
 	    "templates/home_page.html",
+		"templates/about_page.html",
 	)
 	if err != nil {
 		log.Fatalf("Ошибка загрузки шаблонов: %v", err)
@@ -48,26 +49,34 @@ func HandleRequests(){
 	e.GET("/", mainPage)
 	e.GET("/home", homePage)
 	e.GET("/auth", showAuthPage)
+	e.GET("/about", aboutPage)
 	e.POST("/auth/post", authPage)
+	
 	
 	e.Logger.Fatal(e.Start(":8080"))
 }
 
 func homePage(c echo.Context) error{
 	return c.Render(http.StatusOK, "home_page", map[string]interface{}{
-		"Title": "Домашняя страница",
+		"Title": "Home page",
 	})
 }
 
 func mainPage(c echo.Context) error{
 	return c.Render(http.StatusOK, "main_page", map[string]interface{}{
-		"Title": "Главная страница",
+		"Title": "Main page",
+	})
+}
+
+func aboutPage(c echo.Context) error{
+	return c.Render(http.StatusOK, "about_page", map[string]interface{}{
+		"Title": "About",
 	})
 }
 
 func showAuthPage(c echo.Context) error {
 	 return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
-        "Title": "Авторизация",
+        "Title": "Authorization",
         "Error": "", // added empty error for a template
     })
 }
@@ -85,7 +94,7 @@ func authPage(c echo.Context) error{
 	if username == "aaa" && password == "aaa"{
 		return c.Redirect(http.StatusFound, "/home")
 	}
-	data := struct{ Error string }{Error: "Неверный логин или пароль"}
+	data := struct{ Error string }{Error: "Wrong password or login"}
 	return c.Render(http.StatusOK, "auth_page", data)
 }
 

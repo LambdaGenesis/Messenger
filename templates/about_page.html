@@ -1,0 +1,39 @@
+{{ define "about_page" }}
+
+{{ template "header" }}
+{{ template "side_bar" }}
+<link rel="stylesheet" href="/static/styles.css">
+<body>
+    <div class="about-main">
+        <div class="about-container">
+            <div class="about-text">
+                <h3>Only educational purposes! </h3>
+                <p>This website is just an exercise for programming skills. Please, do not take seriously this site</p>
+            </div>  
+        </div>  
+        
+        <div class="side_bar">
+            {{ template "side_bar"}}
+        </div>
+    </div>
+</body>
+
+<style> 
+    .about-container{
+        display: flex;
+        flex: 1;
+    }
+    .about-main{
+        color: white;
+        text-shadow: 0 0 1px;
+    }
+    .about-text{
+        margin-right: 300px;
+    }
+   
+
+</style>
+
+{{ template "footer" }}
+
+{{ end }}
