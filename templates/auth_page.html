@@ -3,6 +3,7 @@
 {{ template "header" }}
 
 <link rel="stylesheet" href="/static/styles.css">
+
 <div class="verification">
     <div class="ver-text">
         <div class="registration"> 
@@ -25,8 +26,15 @@
                 <label for="password">Password:</label>
                 <input type="password" name="password" required>
             </div> 
-            <button type="submit">Enter</button>   
-            
+            <button type="submit" class="buttons">Enter</button>   
+            <div style="border-bottom: solid 4px #ffffff; margin-top: 10px;"></div>
+        </form>
+        <form action="/reg" method="get">
+            <div>
+                <p>Don't have account?</p>
+                <button type="submit" class="buttons">Registration</button>
+            </div>
+    
         </form>
     </div>
 
