@@ -35,6 +35,7 @@ func HandleRequests(){
 	templates, err := template.ParseFiles(
 		"templates/footer.html",
 	    "templates/header.html",
+		"templates/contacts_page.html",
 		"templates/side_bar.html",
 	    "templates/main_page.html",
 	    "templates/auth_page.html",
@@ -50,8 +51,8 @@ func HandleRequests(){
 	e.GET("/home", homePage)
 	e.GET("/auth", showAuthPage)
 	e.GET("/about", aboutPage)
+	e.GET("/contacts", contactsPage)
 	e.POST("/auth/post", authPage)
-	
 	
 	e.Logger.Fatal(e.Start(":8080"))
 }
@@ -71,6 +72,12 @@ func mainPage(c echo.Context) error{
 func aboutPage(c echo.Context) error{
 	return c.Render(http.StatusOK, "about_page", map[string]interface{}{
 		"Title": "About",
+	})
+}
+
+func contactsPage(c echo.Context) error{
+	return c.Render(http.StatusOK, "contacts_page", map[string]interface{}{
+		"Title": "Contacts",
 	})
 }
 
