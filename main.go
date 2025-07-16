@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	_ "fmt"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/labstack/echo/v4"
@@ -41,6 +43,7 @@ func HandleRequests(){
 	    "templates/auth_page.html",
 	    "templates/home_page.html",
 		"templates/about_page.html",
+		"templates/reg_page.html",
 	)
 	if err != nil {
 		log.Fatalf("Ошибка загрузки шаблонов: %v", err)
@@ -51,6 +54,8 @@ func HandleRequests(){
 	e.GET("/home", homePage)
 	e.GET("/auth", showAuthPage)
 	e.GET("/about", aboutPage)
+	e.GET("/reg/post", regPage)
+	e.GET("/reg", showRegPage)
 	e.GET("/contacts", contactsPage)
 	e.POST("/auth/post", authPage)
 	
@@ -81,6 +86,27 @@ func contactsPage(c echo.Context) error{
 	})
 }
 
+func showRegPage(c echo.Context) error{
+	return c.Render(http.StatusOK, "reg_page", map[string]interface{}{
+        "Title": "Registration",
+        "Error": "", // added empty error for a template
+    })
+}
+
+func regPage(c echo.Context) error {
+	if c.Request().Method != http.MethodPost{
+		return c.Redirect(http.StatusFound, "/auth")
+	}
+	
+	usernameReg := c.FormValue("username")
+	passwordReg := c.FormValue("password")
+
+	writeSQL(usernameReg, passwordReg)
+
+	data := struct{Error string}{Error: "Password or login is already exists"}
+	return c.Render(http.StatusOK, "reg_page", data)
+}
+
 func showAuthPage(c echo.Context) error {
 	 return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
         "Title": "Authorization",
@@ -93,28 +119,52 @@ func authPage(c echo.Context) error{
         return c.Redirect(http.StatusFound, "/auth")
     }
 
-	username := c.FormValue("username")
-	password := c.FormValue("password")
+	getUsername := c.FormValue("username")
+	getPassword := c.FormValue("password")
 
-	// databaseSQL(username, password)
-
-	if username == "aaa" && password == "aaa"{
-		return c.Redirect(http.StatusFound, "/home")
-	}
-	data := struct{ Error string }{Error: "Wrong password or login"}
-	return c.Render(http.StatusOK, "auth_page", data)
-}
-
-func databaseSQL(username string, password string){
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
+	// TEST
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
 	if err != nil{
 		panic(err)
 	}
 	defer conn.Close(context.Background())
+	
+	rows, err := conn.Query(context.Background(), "SELECT username, password FROM data_user")
+	if err != nil{
+		log.Fatal(err)
+	}
+	defer rows.Close()
 
-	_, err = conn.Exec(context.Background(), "INSERT INTO data_user (username, password) VALUES ($1, $2)", username, password) // нужнот закинуть переменные, получаемые из строки в странице авторизации 
+	var username string
+	var password int
+	
+	for rows.Next(){
+		err := rows.Scan(&username, &password)
+		if err != nil{
+			log.Fatal(err)
+		}
+		stringPassword := strconv.Itoa(password)
+		if getUsername == username && getPassword == stringPassword{
+			return c.Redirect(http.StatusFound, "/home")
+		}
+
+	}
+
+	data := struct{ Error string }{Error: "Wrong password or login"}
+	return c.Render(http.StatusOK, "auth_page", data)
+}
+
+func writeSQL(username, password string){
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
+	if err != nil{
+		log.Fatal(err)
+	}
+	defer conn.Close(context.Background())
+
+	_, err = conn.Exec(context.Background(), "INSERT INTO data_user (username, password) VALUES ($1, $2)", username, password) // нужно закинуть переменные, получаемые из строки в странице авторизации 
 	if err != nil{
 		log.Fatal(err)
 	}
 
 }
+

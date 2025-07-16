@@ -1,22 +1,17 @@
-{{ define "auth_page" }}
-
+{{ define "reg_page" }}
 {{ template "header" }}
-
+{{ template "side_bar" }}
 <link rel="stylesheet" href="/static/styles.css">
-
-<div class="verification">
-    <div class="ver-text">
-        <div class="registration"> 
-            <p>Enter an account</p>
-        </div>
-
-        {{ if .Error }}
-        <div class="error-message">
-            {{ .Error }}
-        </div>
-        {{ end }}
-
-        <form action="/auth/post" method="post">
+<body>
+    <div class="reg-main">
+        <div class="reg-text">
+                {{ if .Error }}
+                    <div class="error-message">
+                {{ .Error }}
+                     </div>
+                {{ end }}
+            <p>Please, type your password and login: </p>
+            <form action="/reg/post" method="post">
             <div>
                 <label for="username">Login:</label>
                 <input type="text" name="username" required>
@@ -29,18 +24,10 @@
             <button type="submit" class="buttons">Enter</button>   
             <div style="border-bottom: solid 4px #ffffff; margin-top: 10px;"></div>
         </form>
-        <form action="/reg" method="get">
-            <div>
-                <p>Don't have account?</p>
-                <button type="submit" class="buttons">Registration</button>
-            </div>
-    
-        </form>
+        </div>
     </div>
+</body>    
 
 
-    
-</div>
-
-
+{{ template "footer" }}
 {{ end }}

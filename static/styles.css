@@ -9,7 +9,7 @@ body {
     background-color: rgb(50, 50, 50);
     width: 100%;
     padding-top: 3%;
-   
+    padding-top: 30px;
 }
 
 .header-text{
@@ -56,6 +56,23 @@ body {
 }
 
 .ver-text {
+    border-radius: 20px;
+    border-style: double;
+    border-color: black;
+    border-width: 10px;
+    background-color: rgb(70, 70, 70);
+    color: white;
+    text-shadow: 0 0 2px;
+    text-align: center;
+    margin-left: 350px;
+    margin-right: 350px;
+    padding-top: 10px;
+    padding-bottom: 30px;
+    margin-bottom: 80px;
+    
+}
+
+.reg-text {
     border-radius: 20px;
     border-style: double;
     border-color: black;
