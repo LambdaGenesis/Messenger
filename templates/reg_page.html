@@ -1,6 +1,6 @@
 {{ define "reg_page" }}
 {{ template "header" }}
-{{ template "side_bar" }}
+
 <link rel="stylesheet" href="/static/styles.css">
 <body>
     <div class="reg-main">
@@ -14,20 +14,23 @@
             <form action="/reg/post" method="post">
             <div>
                 <label for="username">Login:</label>
-                <input type="text" name="username" required>
+                <input type="text" name="usernameReg" required>
             </div>
 
             <div>
                 <label for="password">Password:</label>
-                <input type="password" name="password" required>
+                <input type="password" name="passwordReg" required>
             </div> 
             <button type="submit" class="buttons">Enter</button>   
             <div style="border-bottom: solid 4px #ffffff; margin-top: 10px;"></div>
         </form>
+            <form action="/auth" method="get">
+                <button type="submit" class="buttons">Back</button>
+            </form>
         </div>
     </div>
 </body>    
 
 
-{{ template "footer" }}
+
 {{ end }}

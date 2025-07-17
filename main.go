@@ -53,11 +53,11 @@ func HandleRequests(){
 	e.GET("/", mainPage)
 	e.GET("/home", homePage)
 	e.GET("/auth", showAuthPage)
+	e.POST("/auth/post", authPage)
 	e.GET("/about", aboutPage)
-	e.GET("/reg/post", regPage)
+	e.POST("/reg/post", regPage)
 	e.GET("/reg", showRegPage)
 	e.GET("/contacts", contactsPage)
-	e.POST("/auth/post", authPage)
 	
 	e.Logger.Fatal(e.Start(":8080"))
 }
@@ -95,13 +95,13 @@ func showRegPage(c echo.Context) error{
 
 func regPage(c echo.Context) error {
 	if c.Request().Method != http.MethodPost{
-		return c.Redirect(http.StatusFound, "/auth")
+		return c.Redirect(http.StatusFound, "/reg")
 	}
 	
-	usernameReg := c.FormValue("username")
-	passwordReg := c.FormValue("password")
+	getUsernameReg := c.FormValue("usernameReg")
+	getPasswordReg := c.FormValue("passwordReg")
 
-	writeSQL(usernameReg, passwordReg)
+	writeSQL(getUsernameReg, getPasswordReg)
 
 	data := struct{Error string}{Error: "Password or login is already exists"}
 	return c.Render(http.StatusOK, "reg_page", data)
@@ -119,8 +119,8 @@ func authPage(c echo.Context) error{
         return c.Redirect(http.StatusFound, "/auth")
     }
 
-	getUsername := c.FormValue("username")
-	getPassword := c.FormValue("password")
+	getUsernameAuth := c.FormValue("username")
+	getPasswordAuth := c.FormValue("password")
 
 	// TEST
 	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
@@ -144,10 +144,9 @@ func authPage(c echo.Context) error{
 			log.Fatal(err)
 		}
 		stringPassword := strconv.Itoa(password)
-		if getUsername == username && getPassword == stringPassword{
+		if getUsernameAuth == username && getPasswordAuth == stringPassword{
 			return c.Redirect(http.StatusFound, "/home")
 		}
-
 	}
 
 	data := struct{ Error string }{Error: "Wrong password or login"}
