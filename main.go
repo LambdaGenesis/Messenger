@@ -102,7 +102,7 @@ func regPage(c echo.Context) error {
 	getPasswordReg := c.FormValue("passwordReg")
 
 	writeSQL(getUsernameReg, getPasswordReg)
-
+	
 	data := struct{Error string}{Error: "Password or login is already exists"}
 	return c.Render(http.StatusOK, "reg_page", data)
 }
