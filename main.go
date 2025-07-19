@@ -101,6 +101,36 @@ func regPage(c echo.Context) error {
 	getUsernameReg := c.FormValue("usernameReg")
 	getPasswordReg := c.FormValue("passwordReg")
 
+	// checking information from tables in database
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
+	if err != nil{
+		log.Fatal(err)
+	}
+	defer conn.Close(context.Background())
+
+	rows, err := conn.Query(context.Background(), "SELECT username, password FROM data_user")
+	if err != nil{
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var username string
+	var password int
+	
+	for rows.Next(){
+		err := rows.Scan(&username, &password)
+		if err != nil{
+			log.Fatal(err)
+		}
+		stringPassword := strconv.Itoa(password)
+		if getUsernameReg == username && getPasswordReg == stringPassword{
+			// return c.Redirect(http.StatusFound, "/home")
+			data := struct{Error string}{Error: "Password or login is already exists"}
+			return c.Render(http.StatusOK, "reg_page", data)
+		}
+	}
+	// checking information from tables in database
+
 	writeSQL(getUsernameReg, getPasswordReg)
 	
 	data := struct{Error string}{Error: "Password or login is already exists"}
@@ -166,4 +196,3 @@ func writeSQL(username, password string){
 	}
 
 }
-
