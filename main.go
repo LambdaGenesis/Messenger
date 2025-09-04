@@ -124,7 +124,7 @@ func regPage(c echo.Context) error {
 		}
 		stringPassword := strconv.Itoa(password)
 		if getUsernameReg == username && getPasswordReg == stringPassword{
-			// return c.Redirect(http.StatusFound, "/home")
+			
 			data := struct{Error string}{Error: "Password or login is already exists"}
 			return c.Render(http.StatusOK, "reg_page", data)
 		}
@@ -183,7 +183,7 @@ func authPage(c echo.Context) error{
 	return c.Render(http.StatusOK, "auth_page", data)
 }
 
-func writeSQL(username, password string){
+func writeSQL(username, password string) {
 	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
 	if err != nil{
 		log.Fatal(err)
