@@ -12,11 +12,38 @@ import (
 	"github.com/jackc/pgx/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
+	"github.com/gorilla/websocket"
+	"sync"
+	"time"
 )
+
+type Message struct{
+	Username string `json:"username"`
+	Content string 	`json:"content"`
+	Time string 	`json:"time"`
+}
+
+type Client struct {
+	conn *websocket.Conn
+	send chan Message
+}
 
 type Template struct{
 	templates *template.Template
 }
+
+var (
+	upgrader = websocket.Upgrader{
+	ReadBufferSize: 1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool{
+		return true},}
+
+	clients    = make(map[*Client]bool)
+	clientsMux = &sync.Mutex{}
+	broadcast  = make(chan Message, 100)
+)
 
 func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error{
 	return t.templates.ExecuteTemplate(w, name, data)
@@ -26,11 +53,129 @@ func main(){
 	HandleRequests()
 }
 
+func handleConnections(w http.ResponseWriter, r *http.Request) {
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Printf("WebSocket upgrade error: %v", err)
+		return
+	}
+	defer ws.Close()
+
+	// Создаем клиента
+	client := &Client{
+		conn: ws,
+		send: make(chan Message, 100),
+	}
+
+	// Регистрируем клиента
+	registerClient(client)
+
+	// Удаляем клиента при отключении
+	defer unregisterClient(client)
+
+	// Отправляем приветственное сообщение
+	welcomeMsg := Message{
+		Username: "System",
+		Content:  "Добро пожаловать в чат!",
+		Time:     time.Now().Format("15:04:05"),
+	}
+	client.send <- welcomeMsg
+
+	// Читаем сообщения от клиента
+	for {
+		var msg Message
+		err := ws.ReadJSON(&msg)
+		if err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				log.Printf("Read error: %v", err)
+			}
+			break
+		}
+		// Добавляем время к сообщению
+		msg.Time = time.Now().Format("15:04:05")
+		log.Printf("Получено сообщение: %s", msg.Content)
+
+		// Отправляем в канал широковещания
+		broadcast <- msg
+	}
+}
+
+// Регистрация клиента
+func registerClient(client *Client) {
+	clientsMux.Lock()
+	defer clientsMux.Unlock()
+	clients[client] = true
+	log.Printf("Новый клиент подключен. Всего клиентов: %d", len(clients))
+
+	// Запускаем горутину для отправки сообщений клиенту
+	go client.writePump()
+}
+
+// Удаление клиента
+func unregisterClient(client *Client) {
+	clientsMux.Lock()
+	defer clientsMux.Unlock()
+	delete(clients, client)
+	log.Printf("Клиент отключен. Осталось клиентов: %d", len(clients))
+
+	// Отправляем уведомление о выходе
+	leaveMsg := Message{
+		Username: "System",
+		Content:  "Пользователь вышел из чата",
+		Time:     time.Now().Format("15:04:05"),
+	}
+	broadcast <- leaveMsg
+
+	close(client.send)
+}
+
+// Отправка сообщений клиенту
+func (c *Client) writePump() {
+	for {
+		msg, ok := <-c.send
+		if !ok {
+			// Канал закрыт
+			c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+			return
+		}
+
+		err := c.conn.WriteJSON(msg)
+		if err != nil {
+			log.Printf("Write error: %v", err)
+			return
+		}
+	}
+}
+
+// Обработчик широковещательных сообщений
+func handleMessages() {
+	for {
+		msg := <-broadcast
+
+		clientsMux.Lock()
+		for client := range clients {
+			select {
+			case client.send <- msg:
+				// Сообщение отправлено в канал клиента
+			default:
+				// Если канал полный, пропускаем сообщение
+				log.Printf("Канал клиента переполнен, сообщение пропущено")
+			}
+		}
+		clientsMux.Unlock()
+	}
+}
+
 func HandleRequests(){
 	e := echo.New()
 	
 	e.Use(middleware.Logger()) // creating a middleware for a programm
 	e.Use(middleware.Recover())
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPost},
+	}))
 	
 	e.Static("/static", "static") // creating static files 
 
@@ -58,6 +203,13 @@ func HandleRequests(){
 	e.POST("/reg/post", regPage)
 	e.GET("/reg", showRegPage)
 	e.GET("/contacts", contactsPage)
+
+	e.GET("/ws", func(c echo.Context) error {
+		handleConnections(c.Response(), c.Request())
+		return nil
+	})
+
+	go handleMessages()
 	
 	e.Logger.Fatal(e.Start(":8080"))
 }
@@ -82,7 +234,7 @@ func aboutPage(c echo.Context) error{
 
 func contactsPage(c echo.Context) error{
 	return c.Render(http.StatusOK, "contacts_page", map[string]interface{}{
-		"Title": "Contacts",
+		"Title": "Chat",
 	})
 }
 
@@ -114,8 +266,10 @@ func regPage(c echo.Context) error {
 	}
 	defer rows.Close()
 
-	var username string
-	var password int
+	var (
+		username string
+		password int
+	)
 	
 	for rows.Next(){
 		err := rows.Scan(&username, &password)

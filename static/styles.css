@@ -10,6 +10,8 @@ body {
     width: 100%;
     padding-top: 3%;
     padding-top: 30px;
+
+    
 }
 
 .header-text{
@@ -19,6 +21,7 @@ body {
     text-shadow: 0 0 4px;
     padding-bottom: 1px;
     margin-bottom: 40px;
+    font-family: sans-serif;
 }   
 
 .header-cols{
@@ -95,16 +98,15 @@ body {
 
 .home-text{
     color: rgb(255, 255, 255);
-    text-shadow: 0 0 2px;
+    text-shadow: 0 0 4px;
     font-family: sans-serif; 
-    font-size: 20px;
+    font-size: 23px;
 
     /* height: auto;
     width: auto;  */
-
     text-align: center;
-    margin-left: 200px;
-    margin-right: 150px;
+    margin-left: 100px;
+    margin-right: 100px;
 }
 
 

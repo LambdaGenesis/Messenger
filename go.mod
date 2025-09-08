@@ -3,6 +3,7 @@ module mods
 go 1.24.1
 
 require (
+	github.com/gorilla/websocket v1.5.3
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/labstack/echo/v4 v4.13.4
 )
