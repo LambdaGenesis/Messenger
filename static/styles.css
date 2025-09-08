@@ -89,17 +89,22 @@ body {
     
 }
 
-.home-container{
+/* .home-container{
     margin-right: 200px;
-}
+} */
 
 .home-text{
-    color: rgb(237, 236, 236);
-    text-shadow: 0 0 4px;
+    color: rgb(255, 255, 255);
+    text-shadow: 0 0 2px;
+    font-family: sans-serif; 
+    font-size: 20px;
+
+    /* height: auto;
+    width: auto;  */
+
     text-align: center;
-    font-family: sans-serif;
-    height: auto;
-    width: auto;
+    margin-left: 200px;
+    margin-right: 150px;
 }
 
 
