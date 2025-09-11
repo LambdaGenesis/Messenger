@@ -18,7 +18,6 @@
         </div>
     </div>
     
-
     <script>
         const socket = new WebSocket("ws://localhost:8080/ws");
         const messagesContainer = document.getElementById("messages");
@@ -59,7 +58,6 @@
 
             if (message && socket.readyState === WebSocket.OPEN) {
                 const msg = {
-                    //username: "User",  //Можно заменить на реальное имя пользователя
                     username: username, 
                     content: message,
                     time: new Date().toLocaleTimeString()
@@ -68,7 +66,7 @@
                 messageInput.value = "";
             }
         }
-        
+
         function addMessage(username, content, time) {
             const messageElement = document.createElement("div");
             messageElement.classList.add("message");
@@ -116,7 +114,7 @@
         padding: 15px;
         border: 3px solid #6c6262;
         border-radius: 10px;
-        margin-left: 100px;
+        margin-left: 200px;
         background-color: #5e5050;
         color: white;
     }
@@ -143,14 +141,16 @@
     .messages{
         background-color: #5e5050;
         overflow-y: auto; 
-        min-height: 300px;
-        max-height: 500px;
+        min-height: 200px;
+        max-height: 400px;
         height: auto;
         border-radius: 15px;
         margin-right: 150px;
-        margin-left: 100px;
+        margin-left: 200px;
         padding-top: 20px;
-        padding-left: 480px;
+        padding-left: 460px;
+
+        word-wrap: break-word;
     }
 
     .messages::-webkit-scrollbar {
