@@ -1,17 +1,20 @@
 {{ define "contacts_page" }}
 {{ template "header" }}
 {{ template "side_bar" }}
+
 <link rel="stylesheet" href="/static/styles.css">
 
 <body>
     <div class="contacts-main">
         <div class="contacts-text">
-            <div class="chat-container">
+            
                 <h1>Genesis WebSocket Chat</h1>
+                
                 <div id="userStatus">Статус: <span id="status">Подключение...</span></div>
+                <input type="text" id="usernameID" placeholder="Введите ваше имя:">
                 <div id="messages" class="messages"></div>
                 <div class="input-area">
-                    <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off">
+                    <input type="text" id="messageInput" placeholder="Введите сообщение..." autocomplete="off">
                     <button onclick="sendMessage()">Send</button>
                 </div>
             </div>
@@ -19,15 +22,14 @@
     </div>
 
     <script>
-        // const socket = new WebSocket("ws://localhost:8080/ws");
         const socket = new WebSocket("ws://localhost:8080/ws");
         const messagesContainer = document.getElementById("messages");
         const messageInput = document.getElementById("messageInput");
         const status = document.getElementById("status");
 
         socket.onopen = function(event) {
-            statusElement.textContent = "Подключено";
-            statusElement.style.color = "green";
+            userStatus.textContent = "Подключено";
+            userStatus.style.color = "green";
             addMessage("System", "Connected to chat", new Date().toLocaleTimeString());
         };
 
@@ -38,21 +40,24 @@
 
         socket.onclose = function(event) {
             addMessage("System", "Disconnected from chat");
-            statusElement.style.color = "red";
+            userStatus.style.color = "red";
+            userStatus.textContent = "Отключено"; 
             addMessage("System", "Disconnected from chat", new Date().toLocaleTimeString())
         };
 
          socket.onerror = function(error) {
-            statusElement.textContent = "Ошибка";
-            statusElement.style.color = "orange";
+            userStatus.textContent = "Ошибка";
+            userStatus.style.color = "orange";
             addMessage("System", "Connection error", new Date().toLocaleTimeString());
         };
 
         function sendMessage() {
             const message = messageInput.value.trim();
+
             if (message && socket.readyState === WebSocket.OPEN) {
                 const msg = {
-                    username: "User", // Можно заменить на реальное имя пользователя
+                    //username: "User",  //Можно заменить на реальное имя пользователя
+                    username: "Amir", 
                     content: message,
                     time: new Date().toLocaleTimeString()
                 };
@@ -63,7 +68,6 @@
         function addMessage(username, content, time) {
             const messageElement = document.createElement("div");
             messageElement.classList.add("message");
-            
             if (username === "System") {
                 messageElement.classList.add("system-message");
                 messageElement.innerHTML = `<em>${content}</em>`;
@@ -85,12 +89,14 @@
         </div>
     </div>
 </body>    
+
 <style> 
     .contacts-text{
         color: white;
         text-shadow: 0 0 5px;
         font-family: sans-serif;
         text-align: center;
+        font-size: 24px;
         margin-right: 100px;
         margin-left: 100px;
     }
@@ -103,28 +109,22 @@
     #messageInput {
         flex: 1;
         padding: 15px;
-        border: 5px solid #6c6262;
-        border-radius: 20px;
+        border: 3px solid #6c6262;
+        border-radius: 10px;
         margin-left: 100px;
-    }
-    
-    button {
-        padding: 10px 20px;
-        background-color: #007bff;
+        background-color: #5e5050;
         color: white;
-        border: none;
-        border-radius: 20px;
-        cursor: pointer;
-        margin-right: 100px;
-        
     }
-    
-    button:hover {
-        background-color: #0056b3;
+    #usernameID{
+        flex: 1;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 3px solid #6c6262;
+        border-radius: 10px;
     }
-    
+
     .system-message {
-        color: #666;
+        color: #ffffff;
         font-style: italic;
         text-align: center;
     }
@@ -133,6 +133,37 @@
         margin-bottom: 10px;
         font-size: 14px;
     }
+
+    .messages{
+        border-color: rgb(0, 0, 0);
+        border-width: 5px;
+        background-color: #5e5050;
+    
+        border-radius: 15px;
+        margin-right: 150px;
+        padding-top: 20px;
+        margin-left: 100px;
+        height: auto;
+        min-height: 300px;
+    }
+    .chat-container{
+        margin-left: 100px;
+        margin-right: 10px;
+    }
+
+    button {
+        background-color: #444547;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-right: 100px;
+    }
+    
+    button:hover {
+        background-color: #909090;
+    }
+    
 </style>
 
 {{ template "footer" }}

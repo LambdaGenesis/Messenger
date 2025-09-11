@@ -92,10 +92,6 @@ body {
     
 }
 
-/* .home-container{
-    margin-right: 200px;
-} */
-
 .home-text{
     color: rgb(255, 255, 255);
     text-shadow: 0 0 4px;
@@ -106,9 +102,8 @@ body {
     width: auto;  */
     text-align: center;
     margin-left: 100px;
-    margin-right: 100px;
+    margin-right: 170px;
 }
-
 
 .footer{
     height: 300px;
