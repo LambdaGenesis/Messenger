@@ -77,7 +77,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 	welcomeMsg := Message{
 		Username: "System",
 		Content:  "Добро пожаловать в чат!",
-		Time:     time.Now().Format("15:04:05"),
+		Time:     time.Now().Format("15:04"),
 	}
 	client.send <- welcomeMsg
 
@@ -92,7 +92,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		// Добавляем время к сообщению
-		msg.Time = time.Now().Format("15:04:05")
+		msg.Time = time.Now().Format("15:04")
 		log.Printf("Получено сообщение: %s", msg.Content)
 
 		// Отправляем в канал широковещания
@@ -122,7 +122,7 @@ func unregisterClient(client *Client) {
 	leaveMsg := Message{
 		Username: "System",
 		Content:  "Пользователь вышел из чата",
-		Time:     time.Now().Format("15:04:05"),
+		Time:     time.Now().Format("15:04"),
 	}
 	broadcast <- leaveMsg
 
