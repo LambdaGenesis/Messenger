@@ -99,7 +99,9 @@
         font-family: sans-serif;
         text-align: center;
         font-size: 24px;
-        margin-right: 100px;
+        
+        /* margin-right: 100px; */
+        margin-right: 12%;
         margin-left: 100px;
     }
 
@@ -114,9 +116,13 @@
         padding: 15px;
         border: 3px solid #6c6262;
         border-radius: 10px;
+
         margin-left: 200px;
+
         background-color: #5e5050;
         color: white;
+
+        min-width: 0;
     }
 
     #usernameInput{
@@ -125,6 +131,8 @@
         margin-bottom: 15px;
         border: 3px solid #6c6262;
         border-radius: 10px;
+
+        min-width: 0;
     }
 
     .system-message {
@@ -135,7 +143,7 @@
     
     #userStatus {
         margin-bottom: 10px;
-        font-size: 14px;
+        font-size: 18px;
     }
 
     .messages{
@@ -145,8 +153,12 @@
         max-height: 400px;
         height: auto;
         border-radius: 15px;
-        margin-right: 150px;
+        margin-right: 150px;  
         margin-left: 200px;
+
+      
+        
+
         padding-top: 20px;
         padding-left: 460px;
 
@@ -172,13 +184,32 @@
         margin-right: 10px;
     }
 
+    @media (max-width: 1024px) {
+            .contacts-main {
+                padding: 15px;
+            }
+            
+            .messages {
+                max-height: 45vh;
+                padding: 15px;
+            }
+            
+            .input-area {
+                max-width: 500px;
+            }
+            
+            #messageInput, button {
+                padding: 12px 20px;
+            }
+        }
+
     button {
         background-color: #444547;
         color: white;
         border: none;
         border-radius: 10px;
         cursor: pointer;
-        margin-right: 100px;
+        margin-right: 150px;
     }
     
     button:hover {
