@@ -2,20 +2,22 @@ package main
 
 import (
 	"context"
-	_ "fmt"
+	_"fmt"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
+	"sync"
+	"time"
 
 	"github.com/jackc/pgx/v4"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/gorilla/websocket"
-	"sync"
-	"time"
+	
 )
 
 type Message struct{
@@ -37,9 +39,7 @@ var (
 	upgrader = websocket.Upgrader{
 	ReadBufferSize: 1024,
 	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool{
-		return true},}
-
+	CheckOrigin: func(r *http.Request) bool{return true},}
 	clients    = make(map[*Client]bool)
 	clientsMux = &sync.Mutex{}
 	broadcast  = make(chan Message, 100)
@@ -138,7 +138,6 @@ func (c *Client) writePump() {
 			c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 			return
 		}
-
 		err := c.conn.WriteJSON(msg)
 		if err != nil {
 			log.Printf("Write error: %v", err)
@@ -194,8 +193,12 @@ func HandleRequests(){
 		log.Fatalf("Ошибка загрузки шаблонов: %v", err)
 	}
 	e.Renderer = &Template{templates: templates}
-	
-	e.GET("/", mainPage)
+
+	e.GET("/", func(c echo.Context) error {
+		return c.Redirect(http.StatusPermanentRedirect, "/auth")
+	})
+
+	e.GET("/main", mainPage)
 	e.GET("/home", homePage)
 	e.GET("/auth", showAuthPage)
 	e.POST("/auth/post", authPage)
@@ -347,5 +350,4 @@ func writeSQL(username, password string) {
 	if err != nil{
 		log.Fatal(err)
 	}
-
 }
