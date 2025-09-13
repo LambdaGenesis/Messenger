@@ -306,7 +306,6 @@ func authPage(c echo.Context) error{
 	getUsernameAuth := c.FormValue("username")
 	getPasswordAuth := c.FormValue("password")
 
-	// TEST
 	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
 	if err != nil{
 		panic(err)
