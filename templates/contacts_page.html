@@ -19,12 +19,17 @@
     </div>
     
     <script>
-        const socket = new WebSocket("ws://localhost:8080/ws");
+        // const socket = new WebSocket("ws://localhost:8080/ws");
+        const socket = new Websocket("wss://optically-better-bustard.cloudpub.ru:8080/ws");
         const messagesContainer = document.getElementById("messages");
         const messageInput = document.getElementById("messageInput");
         const status = document.getElementById("status");
-
         const usernameInput = document.getElementById("usernameInput");
+
+        if (!window.WebSocket) {
+            alert("WebSocket не поддерживается вашим браузером");
+            return;
+        }
 
         socket.onopen = function(event) {
             userStatus.textContent = "Подключено";
@@ -52,9 +57,12 @@
 
         function sendMessage() {
             const message = messageInput.value.trim();
-
             const username = usernameInput.value.trim();
 
+            if (socker.readyState != Websocket.OPEN){
+                addMessage(System, "Соединение не усатновдено", new Date().toLocaleTimeString());
+                return;
+            }
 
             if (message && socket.readyState === WebSocket.OPEN) {
                 const msg = {

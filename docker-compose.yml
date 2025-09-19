@@ -1,0 +1,42 @@
+# version: '3.8'
+networks:
+  internal:
+
+services:
+  messenger: 
+    build: .
+    ports: 
+    - "0.0.0.0:8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://postgres:Roflan_2006@postgres:5432/data
+      HOST: 0.0.0.0
+    restart: unless-stopped
+    networks:
+      - internal
+  postgres:
+      image: postgres:15
+      container_name: postgres
+      pull_policy: never
+      environment:
+        - POSTGRES_DB=data
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=Roflan_2006
+      ports:
+        - "0.0.0.0:5433:5432"
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # ← Добавьте эту строку
+      healthcheck:  # ← Добавьте healthcheck
+        test: ["CMD-SHELL", "pg_isready -U postgres -d data"]
+        interval: 5s
+        timeout: 5s
+        retries: 10
+        
+      networks:
+        - internal
+
+volumes:
+  postgres_data:
+# в основном коде поставил вместо localhost - postgres, чтобы он обращался к базе данных находящейся в docker-compose 

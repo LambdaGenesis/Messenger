@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	_"fmt"
+	_ "fmt"
 	"html/template"
 	"io"
 	"log"
@@ -17,7 +17,6 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/gorilla/websocket"
-	
 )
 
 type Message struct{
@@ -50,6 +49,7 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 }
 
 func main(){
+	initDB()
 	HandleRequests()
 }
 
@@ -214,7 +214,7 @@ func HandleRequests(){
 
 	go handleMessages()
 	
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
 }
 
 func homePage(c echo.Context) error{
@@ -248,18 +248,39 @@ func showRegPage(c echo.Context) error{
     })
 }
 
+func initDB(){
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data")
+	if err != nil{
+		log.Fatalf("%v",err)
+	}
+	_, err = conn.Exec(context.Background(), `
+        CREATE TABLE IF NOT EXISTS data_user (
+            username VARCHAR(50) UNIQUE NOT NULL,
+            password INT NOT NULL
+        )
+    `)
+	if err != nil{
+		time.Sleep(2 * time.Second)
+		initDB()
+		return
+	}
+}
+
+
 func regPage(c echo.Context) error {
 	if c.Request().Method != http.MethodPost{
 		return c.Redirect(http.StatusFound, "/reg")
 	}
-	
 	getUsernameReg := c.FormValue("usernameReg")
 	getPasswordReg := c.FormValue("passwordReg")
-
 	// checking information from tables in database
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
 	if err != nil{
-		log.Fatal(err)
+		log.Printf("Error: %v",err)
+		return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
+			"Title": "Authorization",
+        	"Error": "Database connection error",
+		})
 	}
 	defer conn.Close(context.Background())
 
@@ -281,7 +302,6 @@ func regPage(c echo.Context) error {
 		}
 		stringPassword := strconv.Itoa(password)
 		if getUsernameReg == username && getPasswordReg == stringPassword{
-			
 			data := struct{Error string}{Error: "Password or login is already exists"}
 			return c.Render(http.StatusOK, "reg_page", data)
 		}
@@ -290,8 +310,8 @@ func regPage(c echo.Context) error {
 
 	writeSQL(getUsernameReg, getPasswordReg)
 	
-	data := struct{Error string}{Error: "Password or login is already exists"}
-	return c.Render(http.StatusOK, "reg_page", data)
+	// data := struct{Error string}{Error: "Password or login is already exists"}
+	return c.Render(http.StatusOK, "reg_page", nil)
 }
 
 func showAuthPage(c echo.Context) error {
@@ -309,9 +329,13 @@ func authPage(c echo.Context) error{
 	getUsernameAuth := c.FormValue("username")
 	getPasswordAuth := c.FormValue("password")
 
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data")
 	if err != nil{
-		panic(err)
+		log.Printf("Error: %v",err)
+		return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
+			"Title": "Authorization",
+        	"Error": "Database connection error",
+		})
 	}
 	defer conn.Close(context.Background())
 	
@@ -327,7 +351,10 @@ func authPage(c echo.Context) error{
 	for rows.Next(){
 		err := rows.Scan(&username, &password)
 		if err != nil{
-			log.Fatal(err)
+			return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
+				"Title": "Authorization",
+        		"Error": "Wrong password or login",
+			})
 		}
 		stringPassword := strconv.Itoa(password)
 		if getUsernameAuth == username && getPasswordAuth == stringPassword{
@@ -335,12 +362,17 @@ func authPage(c echo.Context) error{
 		}
 	}
 
-	data := struct{ Error string }{Error: "Wrong password or login"}
-	return c.Render(http.StatusOK, "auth_page", data)
+
+	return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
+		"Title": "Authorization",
+		"Error": "Wrong password or login",
+	})
+	// data := struct{ Error string }{Error: "Wrong password or login"}
+	// return c.Render(http.StatusOK, "auth_page", data)
 }
 
 func writeSQL(username, password string) {
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
 	if err != nil{
 		log.Fatal(err)
 	}
