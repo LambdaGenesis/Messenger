@@ -1,14 +1,14 @@
 # version: '3.8'
 networks:
   internal:
-
 services:
   messenger: 
     build: .
     ports: 
     - "0.0.0.0:8080:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy # ждет когда нормализуется база данных
     environment:
       DATABASE_URL: postgres://postgres:Roflan_2006@postgres:5432/data
       HOST: 0.0.0.0
@@ -18,7 +18,6 @@ services:
   postgres:
       image: postgres:15
       container_name: postgres
-      pull_policy: never
       environment:
         - POSTGRES_DB=data
         - POSTGRES_USER=postgres
@@ -27,13 +26,12 @@ services:
         - "0.0.0.0:5433:5432"
       volumes:
         - postgres_data:/var/lib/postgresql/data
-        - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # ← Добавьте эту строку
-      healthcheck:  # ← Добавьте healthcheck
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql  
+      healthcheck:  # healthcheck
         test: ["CMD-SHELL", "pg_isready -U postgres -d data"]
         interval: 5s
         timeout: 5s
         retries: 10
-        
       networks:
         - internal
 

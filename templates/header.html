@@ -10,7 +10,7 @@
 <header class="header-main">
     <div class="header-text">    
         <div class="header-cols">
-            <div class="header-cols-right"><img src="static\photos\channels4_profile.svg" width="150px"></div>
+            <div class="header-cols-right"><img src="/static/photos/channels4_profile.svg" class="header-img" width="150px" height="150px"></div>
             <div class="header-cols-left">
                 <h3 class="text-inside-header">Genesis</h3>
             </div>
@@ -19,6 +19,25 @@
     <div class="header-line"></div>
 </header>
 
-
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headerImage = document.querySelector('.header-cols-right img');
+    const imageContainer = document.querySelector('.header-cols-right');
+    
+    if (headerImage) {
+        // Проверяем загрузилось ли изображение
+        if (!headerImage.complete || headerImage.naturalHeight === 0) {
+            headerImage.style.display = 'none';
+            imageContainer.innerHTML += '<div style="color: #666; text-align: center;"> </div>';
+        }
+        
+        // Устанавливаем фиксированные размеры
+        headerImage.style.width = '150px';
+        headerImage.style.height = '150px';
+        headerImage.style.minWidth = '150px';
+        headerImage.style.minHeight = '150px';
+    }
+});
+</script>
 {{ end }}
  
