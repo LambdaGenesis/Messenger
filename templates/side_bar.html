@@ -1,5 +1,5 @@
 {{ define "side_bar" }}
-
+<!--
 <link rel="stylesheet" href="/static/styles.css">
 
 <div class="sidenav">
@@ -42,5 +42,220 @@
     }
 </style>
 
+
+ -->
+
+
+<link rel="stylesheet" href="/static/styles.css">
+
+<div class="sidenav" id="sidenav">
+  <button class="close-btn" onclick="closeNav()">×</button>
+  <p class="sidenav-text">Menu</p>
+  <a href="/auth">Authorization</a>
+  <a href="/home">Home</a>
+  <a href="/main">Main</a>
+  <a href="/contacts">Chat</a>
+  <a href="/about">About</a>
+</div>
+
+<button class="menu-btn" onclick="openNav()">☰ Menu</button>
+
+<style>
+    /* Десктопная версия - справа */
+    .sidenav {
+        height: 100%; 
+        width: 250px; 
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        right: -250px; /* Скрыто за экраном справа */
+        background-color: #111; 
+        overflow-x: hidden;
+        padding-top: 60px;
+        transition: 0.3s;
+        /* margin-left: 220px; */
+    }
+    
+    .sidenav a {
+        padding: 12px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: #818181;
+        display: block;
+        transition: 0.2s;
+        text-align: left;
+    }
+    
+    .sidenav a:hover {
+        color: #f1f1f1;
+        background-color: #333;
+    }
+    
+    .sidenav-text {
+        color: white;
+        text-align: center;
+        text-shadow: 0 0 3px;
+        font-size: 20px;
+        margin-bottom: 20px;
+        padding: 0 15px;
+    }
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 30px;
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+    
+    /* Кнопка меню для мобильных - справа */
+    .menu-btn {
+        display: none;
+        position: fixed;
+        top: 15px;
+        right: 15px; /* Перемещено в правый угол */
+        z-index: 999;
+        background-color: #444;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 18px;
+    }
+    
+    /* Мобильная версия */
+    @media screen and (max-width: 1024px) {
+        .menu-btn {
+            display: block;
+        }
+        .sidenav {
+            width: 280px;
+            right: -280px; /* Скрыто справа */
+            left: auto; /* Сбрасываем left */
+            overflow-x: hidden;
+        }
+        
+        .sidenav a {
+            padding: 15px 20px;
+            font-size: 20px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .sidenav-text {
+            font-size: 22px;
+            margin-bottom: 25px;
+        }
+        
+        /* Когда меню открыто */
+        .sidenav.open {
+            right: 0; /* Появляется справа */
+            left: auto;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.5); /* Тень слева */
+        }
+        
+        /* Затемнение фона */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 998; /* Под меню */
+        }
+        .overlay.active {
+            display: block;
+        }
+    }
+    
+    /* Очень маленькие экраны */
+    @media screen and (max-width: 480px) {
+        .sidenav {
+            width: 100%;
+            right: -100%; /* Скрыто справа */
+            left: auto;
+        }
+        .sidenav a {
+            padding: 18px 25px;
+            font-size: 22px;
+        }
+        .sidenav-text {
+            font-size: 24px;
+        }
+        .menu-btn {
+            top: 10px;
+            right: 10px; /* Правый угол */
+            left: auto;
+            padding: 12px 18px;
+            font-size: 20px;
+        }
+    }
+    
+    /* Планшеты */
+    @media screen and (min-width: 769px) and (max-width: 1024px) {
+        .sidenav {
+            width: 300px;
+            right: -300px; /* Скрыто справа */
+            left: auto;
+        }
+    }
+    
+    /* Десктоп - всегда видимо справа */
+    @media screen and (min-width: 1025px) {
+        .sidenav {
+            width: 200px;
+            right: 0; /* Постоянно справа */
+            left: auto;
+            margin-left: 100px;
+        }
+        
+        .menu-btn {
+            display: none;
+        }
+        /* Сдвигаем основной контент чтобы не перекрывалось */
+        body {
+            margin-right: 50px !important;
+        }
+    }
+</style>
+
+<script>
+    function openNav() {
+        document.getElementById("sidenav").classList.add("open");
+        document.getElementById("overlay").classList.add("active");
+    }
+    
+    function closeNav() {
+        document.getElementById("sidenav").classList.remove("open");
+        document.getElementById("overlay").classList.remove("active");
+    }
+    
+    // Закрытие меню при клике вне его
+    document.addEventListener('click', function(event) {
+        const sidenav = document.getElementById('sidenav');
+        const menuBtn = document.querySelector('.menu-btn');
+        const overlay = document.getElementById('overlay');
+        
+        if (sidenav.classList.contains('open') && 
+            !sidenav.contains(event.target) && 
+            event.target !== menuBtn) {
+            closeNav();
+        }
+    });
+    
+    // Закрытие меню при нажатии ESC
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeNav();
+        }
+    });
+</script>
+
+<!-- Затемнение фона -->
+<div class="overlay" id="overlay" onclick="closeNav()"></div>
 
 {{ end }}

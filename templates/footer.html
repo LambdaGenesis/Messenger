@@ -1,4 +1,4 @@
-{{ define "footer" }}
+<!-- 
 
 <link rel="stylesheet" href="/static/styles.css">
 <div class="footer">
@@ -46,6 +46,248 @@
 
 </body>
 
+</html>
+
+ -->
+
+
+
+
+{{ define "footer" }}
+
+<link rel="stylesheet" href="/static/styles.css">
+<div class="footer">
+    <div class="line-footer"></div>
+
+    <div class="footer-content">
+        <div class="footer-cols">
+            <div class="footer-col footer-col-left">
+                <h3 class="footer-title">Contacts</h3>
+                <ul class="footer-list">
+                    <li class="footer-item">
+                        <span class="footer-icon">📧</span>
+                        akhmetzyanovamir2006@gmail.com
+                    </li>
+                    <li class="footer-item">
+                        <span class="footer-icon">📞</span>
+                        7(950)309-06-21
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-col footer-col-right">
+                <h3 class="footer-title">Navigation</h3>
+                <ul class="footer-list">
+                    <li class="footer-item">
+                        <a class="footer-link" href="/main">Main</a>
+                    </li>
+                    <li class="footer-item">
+                        <a class="footer-link" href="/about">About</a>
+                    </li>
+                    <li class="footer-item">
+                        <a class="footer-link" href="/contacts">Chat</a>
+                    </li>
+                    <li class="footer-item">
+                        <a class="footer-link" href="/auth">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p class="footer-copyright">© 2024 Genesis WebSocket Chat. All rights reserved.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .footer {
+        background-color: #252424;
+        color: white;
+        padding: 40px 20px 20px 20px;
+        margin-top: auto;
+    }
+    
+    .line-footer {
+        height: 2px;
+        background: linear-gradient(90deg, #333, #666, #333);
+        margin-bottom: 30px;
+        width: 100%;
+    }
+    
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .footer-cols {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 50px;
+        justify-content: space-between;
+        margin-bottom: 30px;
+    }
+    
+    .footer-col {
+        flex: 1;
+        min-width: 250px;
+    }
+    
+    .footer-title {
+        color: #fff;
+        /* font-size: 1.3rem; */
+        font-size: 30px;
+        margin-bottom: 20px;
+        text-shadow: 0 0 3px rgba(255,255,255,0.3);
+        font-weight: 600;
+    }
+    
+    .footer-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .footer-item {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .footer-icon {
+        font-size: 1.1rem;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .footer-link {
+        color: #ccc;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        padding: 5px 0;
+        display: block;
+    }
+    
+    .footer-link:hover {
+        color: #fff;
+        text-shadow: 0 0 5px rgba(255,255,255,0.5);
+    }
+    
+    .footer-bottom {
+        border-top: 1px solid #333;
+        padding-top: 20px;
+        text-align: center;
+    }
+    
+    .footer-copyright {
+        color: #c5c5c5;
+        font-size: 25px;
+        margin: 0;
+    }
+    
+    /* Мобильная версия */
+    @media (max-width: 768px) {
+        .footer {
+            padding: 30px 15px 15px 15px;
+        }
+        
+        .footer-cols {
+            flex-direction: column;
+            gap: 30px;
+            text-align: center;
+        }
+        
+        .footer-col {
+            min-width: 100%;
+        }
+        
+        .footer-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .footer-item {
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .footer-icon {
+            width: 18px;
+        }
+        
+        .footer-link {
+            padding: 8px 0;
+            font-size: 1.1rem;
+        }
+    }
+    
+    /* Планшеты */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .footer-cols {
+            gap: 30px;
+        }
+        
+        .footer-col {
+            min-width: 200px;
+        }
+        
+        .footer-title {
+            font-size: 1.2rem;
+        }
+    }
+    
+    /* Маленькие мобильные */
+    @media (max-width: 480px) {
+        .footer {
+            padding: 25px 10px 10px 10px;
+        }
+        
+        .footer-title {
+            font-size: 1.1rem;
+        }
+        
+        .footer-item {
+            font-size: 0.9rem;
+        }
+        
+        .footer-link {
+            font-size: 1rem;
+        }
+        
+        .footer-copyright {
+            font-size: 0.8rem;
+        }
+    }
+    
+    /* Большие экраны */
+    @media (min-width: 1200px) {
+        .footer-content {
+            max-width: 1400px;
+        }
+        
+        .footer-cols {
+            gap: 60px;
+        }
+    }
+    
+    /* Темная тема */
+    @media (prefers-color-scheme: light) {
+        .footer {
+            background-color: #2c2c2c;
+        }
+        
+        .footer-link {
+            color: #ddd;
+        }
+        
+        .footer-link:hover {
+            color: #fff;
+        }
+    }
+</style>
+
+</body>
 </html>
 
 {{ end }}

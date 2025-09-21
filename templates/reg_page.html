@@ -2,35 +2,469 @@
 {{ template "header" }}
 
 <link rel="stylesheet" href="/static/styles.css">
+
 <body>
-    <div class="reg-main">
-        <div class="reg-text">
-                {{ if .Error }}
-                    <div class="error-message">
-                {{ .Error }}
-                     </div>
-                {{ end }}
-            <p>Please, type your password and login: </p>
-            <form action="/reg/post" method="post">
-            <div>
-                <label for="username">Login:</label>
-                <input type="text" name="usernameReg" required>
+    <div class="reg-container">
+        <div class="reg-card">
+            <div class="reg-header">
+                <h1 class="reg-title">Create Account</h1>
+                <p class="reg-subtitle">Join Genesis Messenger community</p>
             </div>
 
-            <div>
-                <label for="password">Password:</label>
-                <input type="password" name="passwordReg" required>
-            </div> 
-            <button type="submit" class="buttons">Enter</button>   
-            <div style="border-bottom: solid 4px #ffffff; margin-top: 10px;"></div>
-        </form>
-            <form action="/auth" method="get">
-                <button type="submit" class="buttons">Back</button>
+            {{ if .Error }}
+            <div class="error-message">
+                <span class="error-icon">⚠️</span>
+                {{ .Error }}
+            </div>
+            {{ end }}
+
+            <form action="/reg/post" method="post" class="reg-form">
+                <div class="form-group">
+                    <label for="usernameReg" class="form-label">Username:</label>
+                    <input type="text" id="usernameReg" name="usernameReg" class="form-input" required 
+                           placeholder="Choose your username" minlength="3" maxlength="50">
+                    <span class="input-icon">👤</span>
+                    <div class="input-hint">3-50 characters</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordReg" class="form-label">Password:</label>
+                    <input type="password" id="passwordReg" name="passwordReg" class="form-input" required 
+                           placeholder="Create strong password" minlength="6">
+                    <span class="input-icon">🔒</span>
+                    <div class="input-hint">Minimum 6 characters</div>
+                </div> 
+
+                <button type="submit" class="reg-button primary-button">
+                    <span class="button-icon">🚀</span>
+                    Create Account
+                </button>   
             </form>
+
+            <div class="divider">
+                <span class="divider-line"></span>
+                <span class="divider-text">or</span>
+                <span class="divider-line"></span>
+            </div>
+
+            <form action="/auth" method="get" class="back-form">
+                <p class="back-text">Already have an account?</p>
+                <button type="submit" class="reg-button secondary-button">
+                    <span class="button-icon">↩️</span>
+                    Back to Login
+                </button>
+            </form>
+
+            <div class="reg-footer">
+                <p class="footer-text">Secure registration with WebSocket technology</p>
+            </div>
         </div>
     </div>
-</body>    
+</body>
 
-
+<style>
+    .reg-container {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #2c2c2f 0%, #242424 50%, #1e1c1c 100%);
+    }
+    
+    .reg-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .reg-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .reg-title {
+        color: white;
+        font-size: 2.2rem;
+        margin: 0 0 10px 0;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        font-weight: 300;
+    }
+    
+    .reg-subtitle {
+        color: #ccc;
+        font-size: 1rem;
+        margin: 0;
+        opacity: 0.8;
+    }
+    
+    .error-message {
+        background: rgba(255, 0, 0, 0.1);
+        border: 1px solid rgba(255, 0, 0, 0.3);
+        color: #ff6b6b;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+    
+    .error-icon {
+        margin-right: 8px;
+    }
+    
+    .reg-form {
+        margin-bottom: 25px;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+    
+    .form-label {
+        display: block;
+        color: white;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 15px 45px 15px 15px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #4cc9f0;
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 0 20px rgba(76, 201, 240, 0.3);
+    }
+    
+    .form-input::placeholder {
+        color: #888;
+    }
+    
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        opacity: 0.6;
+    }
+    
+    .input-hint {
+        color: #888;
+        font-size: 0.8rem;
+        margin-top: 5px;
+        margin-left: 5px;
+    }
+    
+    .reg-button {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .primary-button {
+        background: linear-gradient(135deg, #5c5d5e,#6f7280);
+        color: white;
+    }
+    
+    .primary-button:hover {
+        background: linear-gradient(135deg, #b6b7bc, #5c5c5c);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(76, 201, 240, 0.4);
+    }
+    
+    .secondary-button {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .secondary-button:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .divider {
+        display: flex;
+        align-items: center;
+        margin: 25px 0;
+        gap: 15px;
+    }
+    
+    .divider-line {
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .divider-text {
+        color: #888;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+    }
+    
+    .back-form {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .back-text {
+        color: #ccc;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+    }
+    
+    .reg-footer {
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 20px;
+    }
+    
+    .footer-text {
+        color: #888;
+        font-size: 0.8rem;
+        opacity: 0.7;
+    }
+    
+    /* Планшеты */
+    @media (max-width: 1024px) {
+        .reg-container {
+            padding: 30px 15px;
+        }
+        
+        .reg-card {
+            padding: 35px;
+            max-width: 400px;
+        }
+        
+        .reg-title {
+            font-size: 2rem;
+        }
+        
+        .form-input {
+            padding: 14px 40px 14px 14px;
+        }
+    }
+    
+    /* Мобильные устройства */
+    @media (max-width: 768px) {
+        .reg-container {
+            padding: 20px 12px;
+            min-height: calc(100vh - 150px);
+        }
+        
+        .reg-card {
+            padding: 30px 25px;
+            border-radius: 16px;
+        }
+        
+        .reg-title {
+            font-size: 1.8rem;
+        }
+        
+        .reg-subtitle {
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            padding: 12px 35px 12px 12px;
+            font-size: 0.9rem;
+        }
+        
+        .reg-button {
+            padding: 14px;
+            font-size: 1rem;
+        }
+        
+        .input-icon {
+            font-size: 1.1rem;
+            right: 12px;
+        }
+    }
+    
+    /* Маленькие мобильные */
+    @media (max-width: 480px) {
+        .reg-container {
+            padding: 15px 10px;
+        }
+        
+        .reg-card {
+            padding: 25px 20px;
+            border-radius: 14px;
+        }
+        
+        .reg-title {
+            font-size: 1.6rem;
+        }
+        
+        .reg-header {
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-input {
+            padding: 12px 35px 12px 12px;
+            font-size: 16px;
+        }
+        
+        .reg-button {
+            padding: 14px;
+        }
+        
+        .error-message {
+            padding: 12px;
+            font-size: 0.85rem;
+        }
+        
+        .input-hint {
+            font-size: 0.75rem;
+        }
+    }
+    
+    /* Большие экраны */
+    @media (min-width: 1440px) {
+        .reg-card {
+            max-width: 500px;
+            padding: 50px;
+        }
+        
+        .reg-title {
+            font-size: 2.5rem;
+        }
+        
+        .form-input {
+            padding: 18px 50px 18px 18px;
+            font-size: 1.1rem;
+        }
+        
+        .reg-button {
+            padding: 18px;
+            font-size: 1.2rem;
+        }
+    }
+    
+    /* Анимации */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .reg-card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    /* Подсказки при валидации */
+    .form-input:invalid:not(:focus):not(:placeholder-shown) {
+        border-color: #ff6b6b;
+    }
+    
+    .form-input:valid:not(:focus):not(:placeholder-shown) {
+        border-color: #51cf66;
+    }
+    
+    /* Поддержка темной/светлой темы */
+    @media (prefers-color-scheme: light) {
+        .reg-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .reg-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .reg-title {
+            color: #2d3748;
+            text-shadow: none;
+        }
+        
+        .reg-subtitle {
+            color: #718096;
+        }
+        
+        .form-label {
+            color: #2d3748;
+        }
+        
+        .form-input {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #e2e8f0;
+            color: #2d3748;
+        }
+        
+        .form-input:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .form-input::placeholder {
+            color: #a0aec0;
+        }
+        
+        .input-hint {
+            color: #a0aec0;
+        }
+        
+        .error-message {
+            background: rgba(254, 215, 215, 0.8);
+            border-color: #feb2b2;
+            color: #e53e3e;
+        }
+        
+        .back-text {
+            color: #718096;
+        }
+        
+        .divider-text {
+            color: #a0aec0;
+        }
+        
+        .divider-line {
+            background: #e2e8f0;
+        }
+        
+        .footer-text {
+            color: #a0aec0;
+        }
+    }
+</style>
 
 {{ end }}

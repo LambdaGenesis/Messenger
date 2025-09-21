@@ -9,13 +9,10 @@ import (
 	"sync"
 	"time"
 	"strconv"
-	// "fmt"
 
 	"github.com/jackc/pgx/v4"
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-
 	"github.com/gorilla/websocket"
 )
 
@@ -118,10 +115,8 @@ func registerClient(client *Client) { // Регистрация клиента
 	defer clientsMux.Unlock()
 	clients[client] = true
 	log.Printf("Новый клиент подключен. Всего клиентов: %d", len(clients))
-
 	go client.writePump() // Запуск горутины для отправки сообщений клиенту
 }
-
 func unregisterClient(client *Client) { // Удаление клиента
 	clientsMux.Lock()
 	defer clientsMux.Unlock()
@@ -144,7 +139,7 @@ func (c *Client) writePump() { // Отправка сообщений клиен
 	for {
 		msg, ok := <-c.send
 			if !ok {
-				c.conn.WriteMessage(websocket.CloseMessage, []byte{})// Канал закрыт
+				c.conn.WriteMessage(websocket.CloseMessage, []byte{})  // Канал закрыт
 				return
 			}
 			c.conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
@@ -156,13 +151,13 @@ func (c *Client) writePump() { // Отправка сообщений клиен
 	}
 }
 
-func handleMessages() {// Обработчик широковещательных сообщений
+func handleMessages() {  // Обработчик широковещательных сообщений
 	for {
 		msg := <-broadcast
 		clientsMux.Lock()
 		for client := range clients {
 			select {
-				case client.send <- msg:// Сообщение отправлено в канал клиента
+				case client.send <- msg:  // Сообщение отправлено в канал клиента
 				default:
 					log.Printf("Канал клиента переполнен, сообщение пропущено")
 			}
@@ -181,9 +176,9 @@ func HandleRequests(){
 		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPatch, http.MethodDelete}, // CORS для разрешения с браузера 
 	}))
 	
-	e.Static("/static", "static") // Создаем для статических файлов CSS 
+	e.Static("/static", "static") // Создаем для статических файлов CSS (красивые штучки:))))
 
-	templates, err := template.ParseFiles(
+	templates, err := template.ParseFiles( // Обработка HTML-файлов (ну тупо страниц)
 		"templates/footer.html",
 	    "templates/header.html",
 		"templates/contacts_page.html",
@@ -197,7 +192,7 @@ func HandleRequests(){
 	if err != nil {
 		log.Fatalf("Ошибка загрузки шаблонов: %v", err)
 	}
-	e.Renderer = &Template{templates: templates}
+	e.Renderer = &Template{templates: templates} // Рендер шаблонов 
 
 	e.GET("/", func(c echo.Context) error {
 		return c.Redirect(http.StatusPermanentRedirect, "/auth")
@@ -219,68 +214,46 @@ func HandleRequests(){
 
 	go handleMessages()
 	
-	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
-	// e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start("0.0.0.0:8080")) // Хост для показа всем интерфейсам
 }
 
-func homePage(c echo.Context) error{
+func homePage(c echo.Context) error{ // Домашняя страница
 	return c.Render(http.StatusOK, "home_page", map[string]interface{}{
 		"Title": "Home page",
 	})
 }
 
-func mainPage(c echo.Context) error{
+func mainPage(c echo.Context) error{ // Главная страница
 	return c.Render(http.StatusOK, "main_page", map[string]interface{}{
 		"Title": "Main page",
 	})
 }
 
-func aboutPage(c echo.Context) error{
+func aboutPage(c echo.Context) error{ // Страница о самом Месседжере
 	return c.Render(http.StatusOK, "about_page", map[string]interface{}{
 		"Title": "About",
 	})
 }
 
-func contactsPage(c echo.Context) error{
+func contactsPage(c echo.Context) error{ // Страница чата
 	return c.Render(http.StatusOK, "contacts_page", map[string]interface{}{
 		"Title": "Chat",
 	})
 }
 
-func showRegPage(c echo.Context) error{
+func showRegPage(c echo.Context) error{ // Функция, показывающая страницу регистрации
 	return c.Render(http.StatusOK, "reg_page", map[string]interface{}{
         "Title": "Registration",
         "Error": "", // пустая ошибка по приколу 
     })
 }
 
-func initDB(){
-	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data")
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
-	if err != nil{
-		log.Fatalf("%v",err)
-	}
-	_, err = conn.Exec(context.Background(), `
-        CREATE TABLE IF NOT EXISTS data_user (
-            username VARCHAR(50) UNIQUE NOT NULL,
-            password INT NOT NULL
-        )
-    `)
-	if err != nil{
-		time.Sleep(2 * time.Second)
-		initDB() // Рекурсия на проверку 
-		return
-	}
-}
-
-func regPage(c echo.Context) error {
+func regPage(c echo.Context) error { // Функция для регистрации в Мессенджере
 	if c.Request().Method != http.MethodPost{
 		return c.Redirect(http.StatusFound, "/reg")
 	}
-
 	getUsernameReg := c.FormValue("usernameReg")
 	getPasswordReg := c.FormValue("passwordReg")
-
 	if _, err := strconv.Atoi(getPasswordReg); err != nil {
         return c.Render(http.StatusOK, "reg_page", map[string]interface{}{
             "Title": "Registration",
@@ -288,8 +261,8 @@ func regPage(c echo.Context) error {
         })
     }
 	// Проверка инфы с базы даннных 
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
-	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
+	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
 	if err != nil{
 		log.Printf("Error: %v",err)
 		return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
@@ -315,11 +288,8 @@ func regPage(c echo.Context) error {
 		if err != nil{
 			log.Fatal(err)
 		}
-
 		stringPassword := strconv.Itoa(password)
 		if getUsernameReg == username && getPasswordReg == stringPassword{
-
-		// if getUsernameReg == username && getPasswordReg == password{
 			data := struct{Error string}{Error: "Password or login is already exists"}
 			return c.Render(http.StatusOK, "reg_page", data)
 		}
@@ -328,14 +298,14 @@ func regPage(c echo.Context) error {
 	return c.Render(http.StatusOK, "reg_page", nil)
 }
 
-func showAuthPage(c echo.Context) error {
+func showAuthPage(c echo.Context) error { // Функция, показывающая страницу авторизации
 	 return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
         "Title": "Authorization",
-        "Error": "", // added empty error for a template
+        "Error": "", // Пустой шаблон, хз зачем по приколу ахахахах
     })
 }
 
-func authPage(c echo.Context) error{
+func authPage(c echo.Context) error{ // Функция для авторизации в Мессенджере
 	if c.Request().Method != http.MethodPost {
         return c.Redirect(http.StatusFound, "/auth")
     }
@@ -343,8 +313,8 @@ func authPage(c echo.Context) error{
 	getUsernameAuth := c.FormValue("username")
 	getPasswordAuth := c.FormValue("password")
 
-	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data")
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data")
+	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
 	if err != nil{
 		log.Printf("Error: %v",err)
 		return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
@@ -373,23 +343,39 @@ func authPage(c echo.Context) error{
         		"Error": "Wrong password or login",
 			})
 		}
-
 		stringPassword := strconv.Itoa(password)
 		if getUsernameAuth == username && getPasswordAuth == stringPassword{
-		// if getUsernameAuth == username && getPasswordAuth == password{
 			return c.Redirect(http.StatusFound, "/home")
 		}
 	}
-
 	return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
 		"Title": "Authorization",
 		"Error": "Wrong password or login",
 	})
 }
 
+func initDB(){
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data")
+	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	if err != nil{
+		log.Fatalf("%v",err)
+	}
+	_, err = conn.Exec(context.Background(), `
+        CREATE TABLE IF NOT EXISTS data_user (
+            username VARCHAR(50) UNIQUE NOT NULL,
+            password INT NOT NULL
+        )
+    `)
+	if err != nil{
+		time.Sleep(2 * time.Second)
+		initDB() // Рекурсия на проверку 
+		return
+	}
+}
+
 func writeSQL(username, password string) {
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
-	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // Надо будет закинуть в gitignore и защитить от SQL инъекций, хз
+	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // Надо будет закинуть в gitignore и защитить от SQL инъекций, хз не придумал
 	if err != nil{
 		log.Fatal(err)
 	}

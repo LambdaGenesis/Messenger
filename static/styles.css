@@ -29,22 +29,1262 @@ body {
     display: flex;
     flex: 1;
 }
-/* .header-cols-right{
-    margin-right: 50px;
-    margin-top: 70px;
-    margin-bottom: 100px;
-    border: 5px solid rgb(0, 0, 0); 
-    box-shadow: 0 0 7px #ffffff;
-    border-radius: 100px;
-    background-color: white;
+ 
+/* header.html */
+.header-main {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        padding: 15px 20px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        position: relative;
+    }
+    
+    .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .header-cols {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .header-col-left {
+        flex-shrink: 0;
+    }
+    
+    .header-col-right {
+        flex: 1;
+        text-align: center;
+    }
+    
+    .logo-container {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin-left: 150px;
+        margin-top: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .header-img {
+        background-color: white;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 50%;
+        border: 3px solid #ffffff;
+        box-shadow: 0 0 5px rgba(250, 250, 250);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .header-img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+    
+    .logo-placeholder {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #666, #888);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+        border: 3px solid #444;
+    }
+    
+    .text-inside-header {
+        color: white;
+        /* font-size: 2.2rem; */
+        font-size: 50px;
+        margin-right: 50px;
+        margin: 0;
+        text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+    
+    .header-subtitle {
+        color: #ccc;
+        /* font-size: 1rem; */
+        font-size: 30px;
+        margin: 5px 0 0 0;
+        text-shadow: 0 0 5px rgba(255,255,255,0.2);
+        font-weight: 300;
+    }
+    
+    .header-line {
+        height: 4px;
+        background: linear-gradient(90deg, transparent, #ffffff, transparent);
+        margin-top: 150px;
+        width: 100%;
+    }
+    
+    /* Планшеты */
+    @media (max-width: 1024px) {
+        .header-main {
+            padding: 12px 15px;
+        }
+        
+        .text-inside-header {
+            font-size: 1.8rem;
+        }
+        
+        .header-subtitle {
+            font-size: 0.9rem;
+        }
+        
+        .logo-container {
+            width: 70px;
+            height: 70px;
+        }
+        
+        .logo-placeholder {
+            width: 70px;
+            height: 70px;
+            font-size: 1.8rem;
+        }
+    }
+    
+    /* Мобильные устройства */
+    @media (max-width: 768px) {
+        .header-main {
+            padding: 10px 12px;
+        }
+        
+        .header-cols {
+            flex-direction: column;
+            /* gap: 15px; */
+            text-align: center;
+        }
+        .text-inside-header {
+            font-size: 1.6rem;
+            letter-spacing: 0.5px;
+        }
+        .header-subtitle {
+            font-size: 0.85rem;
+        }
+        .logo-container {
+            width: 60px;
+            height: 60px;
+        }
+        .logo-placeholder {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+        }
+        .header-line {
+            margin-top: 12px;
+        }
+    }
+    
+    /* Маленькие мобильные */
+    @media (max-width: 480px) {
+        .header-main {
+            padding: 8px 10px;
+        }
+        
+        .text-inside-header {
+            font-size: 1.4rem;
+        }
+        
+        .header-subtitle {
+            font-size: 0.8rem;
+        }
+        
+        .logo-container {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+        }
+        
+        .header-line {
+            margin-top: 10px;
+        }
+    }
+    
+    /* Большие экраны */
+    @media (min-width: 1440px) {
+        .header-content {
+            max-width: 1400px;
+        }
+        
+        .text-inside-header {
+            font-size: 2.5rem;
+        }
+        
+        .header-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .logo-container {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .logo-placeholder {
+            width: 100px;
+            height: 100px;
+            font-size: 2.5rem;
+        }
+    }
+    
+    /* Анимации */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .header-main {
+        animation: fadeIn 0.6s ease-out;
+    }
+    
+    /* Поддержка темной/светлой темы */
+    @media (prefers-color-scheme: light) {
+        .header-main {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .text-inside-header {
+            color: #2c3e50;
+            text-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-subtitle {
+            color: #6c757d;
+        }
+        
+        .header-img {
+            border-color: #dee2e6;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .logo-placeholder {
+            background: linear-gradient(45deg, #adb5bd, #ced4da);
+            color: #495057;
+            border-color: #dee2e6;
+        }
+    }
+/* header.html */
 
-    min-width: 150px;
-    min-height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-} */
+/* здесь от contacts_page.html */
 
+ .contacts-main {
+        margin-left: 0;
+        transition: margin-left 0.3s ease;
+    }
+    
+    .contacts-text {
+        color: white;
+        text-shadow: 0 0 5px;
+        font-family: sans-serif;
+        text-align: center;
+        font-size: 24px;
+        margin: 0 auto;
+        padding: 20px;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .chat-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .chat-title {
+        font-size: 1.8rem;
+        margin: 0;
+        text-align: center;
+    }
+
+    .menu-toggle-btn {
+        display: none;
+        background: none;
+        border: 2px solid #6c6262;
+        border-radius: 5px;
+        color: white;
+        font-size: 1.5rem;
+        padding: 5px 12px;
+        cursor: pointer;
+        background-color: #444;
+    }
+
+    .menu-toggle-btn:hover {
+        background-color: #555;
+    }
+
+    #userStatus {
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+    }
+
+    .username-input {
+        width: 100%;
+        max-width: 300px;
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 2px solid #6c6262;
+        border-radius: 8px;
+        background-color: #5e5050;
+        color: white;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+
+    .messages {
+        background-color: #5e5050;
+        overflow-y: auto;
+        min-height: 250px;
+        max-height: 50vh;
+        border-radius: 12px;
+        border: 2px solid #6c6262;
+        padding: 20px;
+        margin: 0 auto 20px auto;
+        width: 100%;
+        max-width: 700px;
+        padding-left: 60%;
+        box-sizing: border-box;
+        word-wrap: break-word;
+    }
+
+    .input-area {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+        width: 100%;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .message-input {
+        flex: 1;
+        padding: 12px;
+        border: 2px solid #6c6262;
+        border-radius: 8px;
+        background-color: #5e5050;
+        color: white;
+        font-size: 14px;
+        min-width: 0;
+    }
+
+    .send-btn {
+        background-color: #444547;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 12px 25px;
+        min-width: 80px;
+        font-size: 14px;
+        transition: background-color 0.2s;
+    }
+
+    .send-btn:hover {
+        background-color: #909090;
+    }
+
+    .messages::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .messages::-webkit-scrollbar-track {
+        background: #353535;
+        border-radius: 4px;
+    }
+
+    .messages::-webkit-scrollbar-thumb {
+        background: #7b7b7b;
+        border-radius: 4px;
+    }
+
+    /* Мобильная версия */
+    @media (max-width: 1024px) {
+        .menu-toggle-btn {
+            display: block;
+        }
+        
+        .contacts-text {
+            padding: 15px;
+            font-size: 20px;
+        }
+
+        .chat-title {
+            font-size: 1.5rem;
+        }
+
+        .messages {
+            max-width: 600px;
+            padding: 15px;
+        }
+
+        .input-area {
+            max-width: 600px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .contacts-text {
+            padding: 12px;
+            font-size: 18px;
+        }
+
+        .chat-title {
+            font-size: 1.3rem;
+        }
+
+        .messages {
+            max-width: 100%;
+            padding: 12px;
+            min-height: 200px;
+            max-height: 45vh;
+        }
+
+        .input-area {
+            flex-direction: column;
+            gap: 10px;
+            max-width: 100%;
+        }
+
+        .message-input {
+            width: 100%;
+        }
+
+        .send-btn {
+            width: 100%;
+            padding: 15px;
+        }
+    }
+
+    /* Когда меню открыто на мобильных */
+    @media (max-width: 1024px) {
+        .sidenav.open ~ .contacts-main {
+            margin-left: 280px;
+        }
+    }
+
+    /* Десктоп версия */
+    @media (min-width: 1025px) {
+        .contacts-main {
+            margin-left: 220px; /* Сдвигаем чат правее */
+        }
+        
+        .contacts-text {
+            max-width: 800px;
+            margin-left: 0;
+        }
+        
+        .messages {
+            max-width: 750px;
+        }
+        
+        .input-area {
+            max-width: 750px;
+        }
+    }
+/* здесь от contacts_page.html */
+
+/* авторизация auth_page.html */
+.auth-container {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #2c2c2f 0%, #242424 50%, #1e1c1c 100%);
+    }
+    
+    .auth-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .auth-title {
+        color: white;
+        font-size: 2.2rem;
+        margin: 0 0 10px 0;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        font-weight: 300;
+    }
+    
+    .auth-subtitle {
+        color: #ccc;
+        font-size: 1rem;
+        margin: 0;
+        opacity: 0.8;
+    }
+    
+    .error-message {
+        background: rgba(255, 0, 0, 0.1);
+        border: 1px solid rgba(255, 0, 0, 0.3);
+        color: #ff6b6b;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+    
+    .error-icon {
+        margin-right: 8px;
+    }
+    
+    .auth-form {
+        margin-bottom: 30px;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+    
+    .form-label {
+        display: block;
+        color: white;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 15px 45px 15px 15px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #4cc9f0;
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 0 20px rgba(76, 201, 240, 0.3);
+    }
+    
+    .form-input::placeholder {
+        color: #888;
+    }
+    
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        opacity: 0.6;
+    }
+    
+    .auth-button {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .primary-button {
+        background: linear-gradient(135deg, #5c5d5e,#6f7280);
+        color: white;
+    }
+    
+    .primary-button:hover {
+        background: linear-gradient(135deg, #b6b7bc, #5c5c5c);
+        transform: translateY(-2px);
+        box-shadow: 0 25px 25px rgba(253, 253, 253, 0.6);
+    }
+    
+    .secondary-button {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .secondary-button:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .divider {
+        display: flex;
+        align-items: center;
+        margin: 25px 0;
+        gap: 15px;
+    }
+    
+    .divider-line {
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .divider-text {
+        color: #888;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+    }
+    
+    .register-form {
+        text-align: center;
+    }
+    
+    .register-text {
+        color: #ccc;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+    }
+    
+    .auth-footer {
+        margin-top: 30px;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 20px;
+    }
+    
+    .footer-text {
+        color: #888;
+        font-size: 0.8rem;
+        opacity: 0.7;
+    }
+    
+    /* Планшеты */
+    @media (max-width: 1024px) {
+        .auth-container {
+            padding: 30px 15px;
+        }
+        
+        .auth-card {
+            padding: 35px;
+            max-width: 400px;
+        }
+        
+        .auth-title {
+            font-size: 2rem;
+        }
+        
+        .form-input {
+            padding: 14px 40px 14px 14px;
+        }
+    }
+    
+    /* Мобильные устройства */
+    @media (max-width: 768px) {
+        .auth-container {
+            padding: 20px 12px;
+            min-height: calc(100vh - 150px);
+        }
+        
+        .auth-card {
+            padding: 30px 25px;
+            border-radius: 16px;
+        }
+        
+        .auth-title {
+            font-size: 1.8rem;
+        }
+        
+        .auth-subtitle {
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            padding: 12px 35px 12px 12px;
+            font-size: 0.9rem;
+        }
+        
+        .auth-button {
+            padding: 14px;
+            font-size: 1rem;
+        }
+        
+        .input-icon {
+            font-size: 1.1rem;
+            right: 12px;
+        }
+    }
+    
+    /* Маленькие мобильные */
+    @media (max-width: 480px) {
+        .auth-container {
+            padding: 15px 10px;
+        }
+        
+        .auth-card {
+            padding: 25px 20px;
+            border-radius: 14px;
+        }
+        
+        .auth-title {
+            font-size: 1.6rem;
+        }
+        
+        .auth-header {
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-input {
+            padding: 12px 35px 12px 12px;
+            font-size: 16px; /* Предотвращает zoom в iOS */
+        }
+        
+        .auth-button {
+            padding: 14px;
+        }
+        
+        .error-message {
+            padding: 12px;
+            font-size: 0.85rem;
+        }
+    }
+    
+    /* Большие экраны */
+    @media (min-width: 1440px) {
+        .auth-card {
+            max-width: 500px;
+            padding: 50px;
+        }
+        
+        .auth-title {
+            font-size: 2.5rem;
+        }
+        
+        .form-input {
+            padding: 18px 50px 18px 18px;
+            font-size: 1.1rem;
+        }
+        
+        .auth-button {
+            padding: 18px;
+            font-size: 1.2rem;
+        }
+    }
+    
+    /* Анимации */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .auth-card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    /* Поддержка темной/светлой темы */
+    @media (prefers-color-scheme: light) {
+        .auth-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .auth-title {
+            color: #2d3748;
+            text-shadow: none;
+        }
+        
+        .auth-subtitle {
+            color: #718096;
+        }
+        
+        .form-label {
+            color: #2d3748;
+        }
+        
+        .form-input {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #e2e8f0;
+            color: #2d3748;
+        }
+        
+        .form-input:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .form-input::placeholder {
+            color: #a0aec0;
+        }
+        
+        .error-message {
+            background: rgba(254, 215, 215, 0.8);
+            border-color: #feb2b2;
+            color: #e53e3e;
+        }
+        
+        .register-text {
+            color: #718096;
+        }
+        
+        .divider-text {
+            color: #a0aec0;
+        }
+        
+        .divider-line {
+            background: #e2e8f0;
+        }
+        
+        .footer-text {
+            color: #a0aec0;
+        }
+    }
+/* авторизация auth_page.html */
+
+/* регистрация reg_page.html */
+ .reg-container {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #2c2c2f 0%, #242424 50%, #1e1c1c 100%);
+    }
+    
+    .reg-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .reg-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .reg-title {
+        color: white;
+        font-size: 2.2rem;
+        margin: 0 0 10px 0;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        font-weight: 300;
+    }
+    
+    .reg-subtitle {
+        color: #ccc;
+        font-size: 1rem;
+        margin: 0;
+        opacity: 0.8;
+    }
+    
+    .error-message {
+        background: rgba(255, 0, 0, 0.1);
+        border: 1px solid rgba(255, 0, 0, 0.3);
+        color: #ff6b6b;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+    
+    .error-icon {
+        margin-right: 8px;
+    }
+    
+    .reg-form {
+        margin-bottom: 25px;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+    
+    .form-label {
+        display: block;
+        color: white;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 15px 45px 15px 15px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #4cc9f0;
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 0 20px rgba(76, 201, 240, 0.3);
+    }
+    
+    .form-input::placeholder {
+        color: #888;
+    }
+    
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        opacity: 0.6;
+    }
+    
+    .input-hint {
+        color: #888;
+        font-size: 0.8rem;
+        margin-top: 5px;
+        margin-left: 5px;
+    }
+    
+    .reg-button {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .primary-button {
+        background: linear-gradient(135deg, #5c5d5e,#6f7280);
+        color: white;
+    }
+    
+    .primary-button:hover {
+        background: linear-gradient(135deg, #b6b7bc, #5c5c5c);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(76, 201, 240, 0.4);
+    }
+    
+    .secondary-button {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .secondary-button:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .divider {
+        display: flex;
+        align-items: center;
+        margin: 25px 0;
+        gap: 15px;
+    }
+    
+    .divider-line {
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .divider-text {
+        color: #888;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+    }
+    
+    .back-form {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .back-text {
+        color: #ccc;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+    }
+    
+    .reg-footer {
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 20px;
+    }
+    
+    .footer-text {
+        color: #888;
+        font-size: 0.8rem;
+        opacity: 0.7;
+    }
+    
+    /* Планшеты */
+    @media (max-width: 1024px) {
+        .reg-container {
+            padding: 30px 15px;
+        }
+        
+        .reg-card {
+            padding: 35px;
+            max-width: 400px;
+        }
+        
+        .reg-title {
+            font-size: 2rem;
+        }
+        
+        .form-input {
+            padding: 14px 40px 14px 14px;
+        }
+    }
+    
+    /* Мобильные устройства */
+    @media (max-width: 768px) {
+        .reg-container {
+            padding: 20px 12px;
+            min-height: calc(100vh - 150px);
+        }
+        
+        .reg-card {
+            padding: 30px 25px;
+            border-radius: 16px;
+        }
+        
+        .reg-title {
+            font-size: 1.8rem;
+        }
+        
+        .reg-subtitle {
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            padding: 12px 35px 12px 12px;
+            font-size: 0.9rem;
+        }
+        
+        .reg-button {
+            padding: 14px;
+            font-size: 1rem;
+        }
+        
+        .input-icon {
+            font-size: 1.1rem;
+            right: 12px;
+        }
+    }
+    
+    /* Маленькие мобильные */
+    @media (max-width: 480px) {
+        .reg-container {
+            padding: 15px 10px;
+        }
+        
+        .reg-card {
+            padding: 25px 20px;
+            border-radius: 14px;
+        }
+        
+        .reg-title {
+            font-size: 1.6rem;
+        }
+        
+        .reg-header {
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-input {
+            padding: 12px 35px 12px 12px;
+            font-size: 16px;
+        }
+        
+        .reg-button {
+            padding: 14px;
+        }
+        
+        .error-message {
+            padding: 12px;
+            font-size: 0.85rem;
+        }
+        
+        .input-hint {
+            font-size: 0.75rem;
+        }
+    }
+    
+    /* Большие экраны */
+    @media (min-width: 1440px) {
+        .reg-card {
+            max-width: 500px;
+            padding: 50px;
+        }
+        
+        .reg-title {
+            font-size: 2.5rem;
+        }
+        
+        .form-input {
+            padding: 18px 50px 18px 18px;
+            font-size: 1.1rem;
+        }
+        
+        .reg-button {
+            padding: 18px;
+            font-size: 1.2rem;
+        }
+    }
+    
+    /* Анимации */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .reg-card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    /* Подсказки при валидации */
+    .form-input:invalid:not(:focus):not(:placeholder-shown) {
+        border-color: #ff6b6b;
+    }
+    
+    .form-input:valid:not(:focus):not(:placeholder-shown) {
+        border-color: #51cf66;
+    }
+    
+    /* Поддержка темной/светлой темы */
+    @media (prefers-color-scheme: light) {
+        .reg-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .reg-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .reg-title {
+            color: #2d3748;
+            text-shadow: none;
+        }
+        
+        .reg-subtitle {
+            color: #718096;
+        }
+        
+        .form-label {
+            color: #2d3748;
+        }
+        
+        .form-input {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #e2e8f0;
+            color: #2d3748;
+        }
+        
+        .form-input:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .form-input::placeholder {
+            color: #a0aec0;
+        }
+        
+        .input-hint {
+            color: #a0aec0;
+        }
+        
+        .error-message {
+            background: rgba(254, 215, 215, 0.8);
+            border-color: #feb2b2;
+            color: #e53e3e;
+        }
+        
+        .back-text {
+            color: #718096;
+        }
+        
+        .divider-text {
+            color: #a0aec0;
+        }
+        
+        .divider-line {
+            background: #e2e8f0;
+        }
+        
+        .footer-text {
+            color: #a0aec0;
+        }
+    }
+/* регистрация reg_page.html */
 
 .header-cols-right {
     position: relative;
