@@ -28,6 +28,7 @@ type Message struct{
 type Client struct {
 	conn *websocket.Conn
 	send chan Message
+	stopPing chan bool
 }
 
 type Template struct{
@@ -63,28 +64,22 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 	}
 	defer ws.Close()
 
-	// Создаем клиента
-	client := &Client{
+	ws.SetReadDeadline(time.Now().Add(180 * time.Second)) // было 60 сек
+    ws.SetPongHandler(func(string) error { 
+        ws.SetReadDeadline(time.Now().Add(180 * time.Second)) // было 60 сек
+        return nil 
+    })	
+	client := &Client{ // Создаем клиента
 		conn: ws,
 		send: make(chan Message, 100),
+		stopPing: make(chan bool),
 	}
+	go pingClient(client)
+	
+	registerClient(client) // Регистрируем клиента
+	defer unregisterClient(client) // Удаляем клиента при отключении
 
-	// Регистрируем клиента
-	registerClient(client)
-
-	// Удаляем клиента при отключении
-	defer unregisterClient(client)
-
-	// Отправляем приветственное сообщение
-	welcomeMsg := Message{
-		Username: "System",
-		Content:  "",
-		Time:     time.Now().Format("15:04"),
-	}
-	client.send <- welcomeMsg
-
-	// Читаем сообщения от клиента
-	for {
+	for { // Читаем сообщения от клиента
 		var msg Message
 		err := ws.ReadJSON(&msg)
 		if err != nil {
@@ -93,74 +88,83 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 			}
 			break
 		}
-		// Добавляем время к сообщению
-		msg.Time = time.Now().Format("15:04")
+		msg.Time = time.Now().Format("15:04") // Добавляем время к сообщению
 		log.Printf("Получено сообщение: %s", msg.Content)
 
-		// Отправляем в канал широковещания
-		broadcast <- msg
+		broadcast <- msg // Отправляем в канал широковещания
 	}
 }
 
-// Регистрация клиента
-func registerClient(client *Client) {
+func pingClient(client *Client){
+	ticker := time.NewTicker(30 * time.Second) // Ping каждые 30 секунд
+    defer ticker.Stop()
+    
+    for {
+        select {
+        case <-ticker.C:
+            client.conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+            if err := client.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+                log.Printf("Ping error: %v", err)
+                return
+            }
+        case <-client.stopPing: // Остановить если канал закрыт
+            return
+        }
+    }
+}
+
+func registerClient(client *Client) { // Регистрация клиента
 	clientsMux.Lock()
 	defer clientsMux.Unlock()
 	clients[client] = true
 	log.Printf("Новый клиент подключен. Всего клиентов: %d", len(clients))
 
-	// Запускаем горутину для отправки сообщений клиенту
-	go client.writePump()
+	go client.writePump() // Запуск горутины для отправки сообщений клиенту
 }
 
-// Удаление клиента
-func unregisterClient(client *Client) {
+func unregisterClient(client *Client) { // Удаление клиента
 	clientsMux.Lock()
 	defer clientsMux.Unlock()
+
+	close(client.stopPing)
+
 	delete(clients, client)
 	log.Printf("Клиент отключен. Осталось клиентов: %d", len(clients))
 
-	// Отправляем уведомление о выходе
-	leaveMsg := Message{
+	leaveMsg := Message{ // Отправляем уведомление о выходе
 		Username: "System",
 		Content:  "Пользователь вышел из чата",
 		Time:     time.Now().Format("15:04"),
 	}
 	broadcast <- leaveMsg
-
 	close(client.send)
 }
 
-// Отправка сообщений клиенту
-func (c *Client) writePump() {
+func (c *Client) writePump() { // Отправка сообщений клиенту
 	for {
 		msg, ok := <-c.send
-		if !ok {
-			// Канал закрыт
-			c.conn.WriteMessage(websocket.CloseMessage, []byte{})
-			return
-		}
-		err := c.conn.WriteJSON(msg)
-		if err != nil {
-			log.Printf("Write error: %v", err)
-			return
-		}
+			if !ok {
+				c.conn.WriteMessage(websocket.CloseMessage, []byte{})// Канал закрыт
+				return
+			}
+			c.conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+			err := c.conn.WriteJSON(msg)
+			if err != nil {
+				log.Printf("Write error: %v", err)
+				return
+			}
 	}
 }
 
-// Обработчик широковещательных сообщений
-func handleMessages() {
+func handleMessages() {// Обработчик широковещательных сообщений
 	for {
 		msg := <-broadcast
-
 		clientsMux.Lock()
 		for client := range clients {
 			select {
-			case client.send <- msg:
-				// Сообщение отправлено в канал клиента
-			default:
-				// Если канал полный, пропускаем сообщение
-				log.Printf("Канал клиента переполнен, сообщение пропущено")
+				case client.send <- msg:// Сообщение отправлено в канал клиента
+				default:
+					log.Printf("Канал клиента переполнен, сообщение пропущено")
 			}
 		}
 		clientsMux.Unlock()
@@ -170,15 +174,14 @@ func handleMessages() {
 func HandleRequests(){
 	e := echo.New()
 	
-	e.Use(middleware.Logger()) // миддлвейр 
+	e.Use(middleware.Logger()) // Middleware
 	e.Use(middleware.Recover())
-
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPatch, http.MethodDelete}, // CORS для разрешения с браузера 
 	}))
 	
-	e.Static("/static", "static") // создаем для статических файлов CSS 
+	e.Static("/static", "static") // Создаем для статических файлов CSS 
 
 	templates, err := template.ParseFiles(
 		"templates/footer.html",
@@ -265,7 +268,7 @@ func initDB(){
     `)
 	if err != nil{
 		time.Sleep(2 * time.Second)
-		initDB() // рекурсия на проверку
+		initDB() // Рекурсия на проверку 
 		return
 	}
 }
@@ -284,7 +287,7 @@ func regPage(c echo.Context) error {
             "Error": "Password must contain only numbers",
         })
     }
-	// проверка инфы с базы даннных 
+	// Проверка инфы с базы даннных 
 	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
 	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
 	if err != nil{
@@ -386,13 +389,13 @@ func authPage(c echo.Context) error{
 
 func writeSQL(username, password string) {
 	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
-	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
+	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // Надо будет закинуть в gitignore и защитить от SQL инъекций, хз
 	if err != nil{
 		log.Fatal(err)
 	}
 	defer conn.Close(context.Background())
 
-	_, err = conn.Exec(context.Background(), "INSERT INTO data_user (username, password) VALUES ($1, $2)", username, password) // нужно закинуть переменные, получаемые из строки в странице авторизации 
+	_, err = conn.Exec(context.Background(), "INSERT INTO data_user (username, password) VALUES ($1, $2)", username, password) // Нужно закинуть переменные, получаемые из строки в странице авторизации 
 	if err != nil{
 		log.Fatal(err)
 	}

@@ -19,19 +19,16 @@
     </div>
     
     <script>
+        let reconnectAttempts = 0;
         // const socket = new WebSocket("ws://localhost:8080/ws");
-        const socket = new WebSocket("wss://genesis.cloudpub.ru:/ws"); // использовал через админа в командлайне netsh advfirewall firewall add rule name="WebServer 8080" dir=in action=allow protocol=TCP localport=8080 
-
-        // const socket = new WebSocket("wss://optically-better-bustard.cloudpub.ru/ws");
+        const socket = new WebSocket("wss://genesis.cloudpub.ru:/ws"); // Использовал через админа в командлайне netsh advfirewall firewall add rule name="WebServer 8080" dir=in action=allow protocol=TCP localport=8080 
         const messagesContainer = document.getElementById("messages");
         const messageInput = document.getElementById("messageInput");
         const userStatus = document.getElementById("userStatus");
         const status = document.getElementById("status");
         const usernameInput = document.getElementById("usernameInput");
         
-
         socket.onopen = function(event) {
-            console.log("✅ Connected!");
             userStatus.textContent = "Подключено";
             userStatus.style.color = "green";
             addMessage("System", "Connected to chat", new Date().toLocaleTimeString());
@@ -41,30 +38,25 @@
             addMessage(msg.username, msg.content, msg.time);
         };
         socket.onclose = function(event) {
-            console.log("🔌 Closed:", event.code, event.reason);
             addMessage("System", "Disconnected from chat");
             userStatus.style.color = "red";
             userStatus.textContent = "Отключено"; 
             addMessage("System", "Disconnected from chat", new Date().toLocaleTimeString());
+
+            setTimeout(reconnect, Math.min(3000, reconnectAttempts * 1000));
+            reconnectAttempts++;
         };
          socket.onerror = function(error) {
-            console.error("❌ Error:", error);
             userStatus.textContent = "Ошибка";
             userStatus.style.color = "orange";
             addMessage("System", "Connection error", new Date().toLocaleTimeString());
         };
-        // setTimeout(() => {
-        //     if (socket.readyState === WebSocket.CONNECTING) {
-        //         console.error('⏰ Таймаут подключения');
-        //         socket.close();
-        //     }
-        // }, 5000);
         function sendMessage() {
             const message = messageInput.value.trim();
             const username = usernameInput.value.trim();
 
             if (socket.readyState != WebSocket.OPEN){
-                addMessage(System, "Соединение не установлено", new Date().toLocaleTimeString());
+                addMessage("System", "Соединение не установлено", new Date().toLocaleTimeString());
                 return;
             }
             if (message && socket.readyState === WebSocket.OPEN) {
@@ -122,7 +114,7 @@
         margin-left: 200px;
         background-color: #5e5050;
         color: white;
-        min-width: 0;
+        min-width: 200;
     }
     #usernameInput{
         flex: 1;
@@ -146,6 +138,8 @@
         overflow-y: auto; 
         min-height: 200px;
         max-height: 400px;
+        min-width: 200px;
+        max-width: 400px;
         height: auto;
         border-radius: 15px;
         margin-right: 150px;  
