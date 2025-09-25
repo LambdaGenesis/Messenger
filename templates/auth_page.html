@@ -372,69 +372,6 @@
     .auth-card {
         animation: fadeInUp 0.6s ease-out;
     }
-    
-    /* Поддержка темной/светлой темы */
-    @media (prefers-color-scheme: light) {
-        .auth-container {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .auth-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-        
-        .auth-title {
-            color: #2d3748;
-            text-shadow: none;
-        }
-        
-        .auth-subtitle {
-            color: #718096;
-        }
-        
-        .form-label {
-            color: #2d3748;
-        }
-        
-        .form-input {
-            background: rgba(255, 255, 255, 0.9);
-            border-color: #e2e8f0;
-            color: #2d3748;
-        }
-        
-        .form-input:focus {
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        .form-input::placeholder {
-            color: #a0aec0;
-        }
-        
-        .error-message {
-            background: rgba(254, 215, 215, 0.8);
-            border-color: #feb2b2;
-            color: #e53e3e;
-        }
-        
-        .register-text {
-            color: #718096;
-        }
-        
-        .divider-text {
-            color: #a0aec0;
-        }
-        
-        .divider-line {
-            background: #e2e8f0;
-        }
-        
-        .footer-text {
-            color: #a0aec0;
-        }
-    }
 </style>
 
 {{ end }}

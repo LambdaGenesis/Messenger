@@ -6,24 +6,73 @@
 <body>
     <div class="main-main">
         <div class="main-text">  
-                Мгновенные сообщения, подключайтесь к друзьям, семье и коллегам без границ!
+            Мгновенные сообщения, подключайтесь к друзьям, семье и коллегам без границ!
+            Данная версия приложения находится в бета-версии. Доступен только общий чат.
         </div>
     </div> 
 </body>
 <style>
-    .main-text{
-        color:white;
-        text-shadow: 0 0 5px;
-        margin-left: 100px;
-        margin-right: 200px;
+    .main-main {
+        padding: 20px;
+        width: 100%;
+        width: calc(100% - 250px);
+        box-sizing: border-box;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .main-text {
+        color: white;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
         font-size: 35px;
-        font-family: sans-serif; 
+        font-weight: 600;
+        font-family: sans-serif;
+        text-align: center;
+        line-height: 1.4;
+        margin: 0 auto;
+        padding: 15px;
+        max-width: 90%;
+        /* margin-right: 80px; */
+    }
+
+    /* Мобильная версия */
+    @media (max-width: 768px) {
+        .main-main {
+            padding: 15px 10px;
+            /* margin-left: 0 !important; */
+            text-align: center;
+            width: calc(100% - 0px);
+        }
+        .main-text {
+            font-size: 30px;
+            /* margin-left: 120px; */
+            margin-right: 0 !important;
+            padding: 5px 10px;
+            /* max-width: 100%; */
+            text-align: center;
+        }
+    }
+
+    /* Для очень маленьких экранов */
+    @media (max-width: 480px) {
+        .main-text {
+            font-size: 16px;
+            padding: 8px 0;
+        }
+        .main-main {
+            padding: 10px 5px;
+        }
+    }
+
+    /* Горизонтальная ориентация на мобильных */
+    @media (max-height: 500px) and (orientation: landscape) {
+        .main-text {
+            font-size: 16px;
+            padding: 5px 0;
+        }
     }
 </style>
 
-
 </header>
-
 
 {{ template "footer" }}
 {{ end }}

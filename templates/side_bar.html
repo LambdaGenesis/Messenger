@@ -1,51 +1,4 @@
 {{ define "side_bar" }}
-<!--
-<link rel="stylesheet" href="/static/styles.css">
-
-<div class="sidenav">
-  <p class="sidenav-text">Menu</p>
-  <a href="/auth">Authorization</a>
-  <a href="/home">Home</a>
-  <a href="/main">Main</a>
-  <a href="/contacts">Chat</a>
-  <a href="/about">About</a>
-</div>
-
-<style>
-    .sidenav {
-        height: 100%; 
-        width: 500px; 
-        position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-        z-index: 0; /* Stay on top */
-        top: 0; /* Stay at the top */
-        left: 0;
-        background-color: #111; 
-        overflow-x: hidden; 
-        padding-top: 90px;
-        margin-left: 85%;
-    }
-    .sidenav a {
-        padding: 6px 8px 6px 16px;
-        text-decoration: none;
-        font-size: 25px;
-        color: #818181;
-        display: block;
-    }
-    .sidenav a:hover {
-        color: #f1f1f1;
-    }
-    .sidenav-text{
-        color: white;
-        /* text-align: center; */
-        padding-left: 10%;
-        text-shadow: 0 0 3px;
-    }
-</style>
-
-
- -->
-
-
 <link rel="stylesheet" href="/static/styles.css">
 
 <div class="sidenav" id="sidenav">
@@ -82,7 +35,7 @@
         font-size: 18px;
         color: #818181;
         display: block;
-        transition: 0.2s;
+        transition: 0.9s;
         text-align: left;
     }
     
@@ -95,7 +48,7 @@
         color: white;
         text-align: center;
         text-shadow: 0 0 3px;
-        font-size: 20px;
+        font-size: 18px;
         margin-bottom: 20px;
         padding: 0 15px;
     }
@@ -114,14 +67,14 @@
     .menu-btn {
         display: none;
         position: fixed;
-        top: 15px;
-        right: 15px; /* Перемещено в правый угол */
+        top: 30px;
+        right: 40px; /* Перемещено в правый угол */
         z-index: 999;
         background-color: #444;
         color: white;
         border: none;
-        border-radius: 5px;
-        padding: 10px 15px;
+        border-radius: 8px;
+        padding: 8px 10px;
         cursor: pointer;
         font-size: 18px;
     }
@@ -137,25 +90,24 @@
             left: auto; /* Сбрасываем left */
             overflow-x: hidden;
         }
-        
         .sidenav a {
             padding: 15px 20px;
             font-size: 20px;
+            font-weight: 600;
+            font-family: Arial, Helvetica, sans-serif;
+            text-shadow: 0 0 1px white;
             border-bottom: 1px solid #333;
         }
-        
         .sidenav-text {
-            font-size: 22px;
+            font-size: 20px;
             margin-bottom: 25px;
         }
-        
         /* Когда меню открыто */
         .sidenav.open {
-            right: 0; /* Появляется справа */
+            right: 0; 
             left: auto;
-            box-shadow: -4px 0 15px rgba(0,0,0,0.5); /* Тень слева */
+            box-shadow: -4px 0 15px rgba(0,0,0,0.5); 
         }
-        
         /* Затемнение фона */
         .overlay {
             display: none;

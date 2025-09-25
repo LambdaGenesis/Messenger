@@ -1,7 +1,6 @@
 {{ define "header" }}
 
 <!DOCTYPE html>
-<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,34 +30,34 @@
 
 <style>
     .header-main {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        background: linear-gradient(180deg, rgb(0, 0, 0), rgb(35, 35, 35));
         padding: 15px 20px;
-        box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        box-shadow: 0 0px 0px rgba(0,0,0,0);
         position: relative;
     }
-    
     .header-content {
         max-width: 1200px;
         margin: 0 auto;
     }
-    
     .header-cols {
-        display: flex;
+        display: flex; 
         align-items: center;
-        justify-content: center;
-        gap: 20px;
-        flex-wrap: wrap;
+        justify-content: center; 
+        gap: 0px;
+        flex-wrap: wrap; 
+        margin-right: 40px;
     }
-    
     .header-col-left {
         flex-shrink: 0;
+        margin-left: 150px;
+        padding-top: 30px;
     }
-    
     .header-col-right {
         flex: 1;
         text-align: center;
+        margin-right: 100px;
+        margin-top: 70px;
     }
-    
     .logo-container {
         position: relative;
         width: 80px;
@@ -69,28 +68,26 @@
         align-items: center;
         justify-content: center;
     }
-    
     .header-img {
         background-color: white;
         width: 100%;
         height: 100%;
         object-fit: contain;
         border-radius: 50%;
-        border: 3px solid #ffffff;
-        box-shadow: 0 0 5px rgba(250, 250, 250);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+        border: 3px solid #000000;
+        box-shadow: 0 0 9px rgba(250, 250, 250);
+        transition: transform 0.6s ease, box-shadow 0.4s ease;
     }
-    
     .header-img:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        box-shadow: 0 0 20px rgba(255,255,255,0.4);
     }
-    
     .logo-placeholder {
         width: 80px;
         height: 80px;
         border-radius: 50%;
-        background: linear-gradient(45deg, #666, #888);
+        background: linear-gradient(180deg, #000000, #4a4a4a);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -99,10 +96,8 @@
         font-weight: bold;
         border: 3px solid #444;
     }
-    
     .text-inside-header {
         color: white;
-        /* font-size: 2.2rem; */
         font-size: 50px;
         margin-right: 50px;
         margin: 0;
@@ -110,172 +105,143 @@
         font-weight: 300;
         letter-spacing: 1px;
     }
-    
     .header-subtitle {
         color: #ccc;
-        /* font-size: 1rem; */
         font-size: 30px;
         margin: 5px 0 0 0;
         text-shadow: 0 0 5px rgba(255,255,255,0.2);
         font-weight: 300;
     }
-    
     .header-line {
-        height: 4px;
+        height: 5px;
         background: linear-gradient(90deg, transparent, #ffffff, transparent);
+        box-shadow: 0px 1px white;
         margin-top: 150px;
         width: 100%;
     }
-    
     /* Планшеты */
     @media (max-width: 1024px) {
         .header-main {
             padding: 12px 15px;
         }
-        
         .text-inside-header {
             font-size: 1.8rem;
         }
-        
         .header-subtitle {
             font-size: 0.9rem;
         }
-        
         .logo-container {
             width: 70px;
             height: 70px;
         }
-        
         .logo-placeholder {
             width: 70px;
             height: 70px;
             font-size: 1.8rem;
         }
     }
-    
-    /* Мобильные устройства */
-    @media (max-width: 768px) {
-        .header-main {
-            padding: 10px 12px;
+
+    @media (max-width: 700px) {
+            .header-main {
+                padding: 10px 15px; 
+                width: 100%;
+                overflow-x: hidden;
+                width: 100%;
+            }
+            .header-cols {
+                flex-direction: column; 
+                gap: 40px;
+                margin-right: 0 !important;
+                margin-right: 0; 
+            }
+            .header-col-left {
+                padding-top: 60px; 
+                order: 1; 
+                margin-left: 0 !important; 
+                padding-right: 220px !important;
+            }
+            .header-col-right {
+                margin-right: 80px; 
+                margin-top: 80px; 
+                order: 2; 
+                /* margin-right: 0 !important; */
+            }
+            .logo-container {
+                width: 60px; 
+                height: 60px;
+                margin-left: 0; 
+                margin-top: 30px;
+                margin: 0 auto;  
+                
+            }
+            .text-inside-header {
+                font-size: 30px; 
+                margin-right: 0; 
+                letter-spacing: 0.6px;
+                font-family: Arial, Helvetica, sans-serif;
+            .header-subtitle {
+                font-size: 30px; /* Уменьшил размер шрифта */
+                font-family: 'Times New Roman', Times, serif;
+            }
+            .header-line {
+                margin-top: 40px; 
+            }
         }
-        
-        .header-cols {
-            flex-direction: column;
-            /* gap: 15px; */
-            text-align: center;
-        }
-        .text-inside-header {
-            font-size: 1.6rem;
-            letter-spacing: 0.5px;
-        }
-        .header-subtitle {
-            font-size: 0.85rem;
-        }
-        .logo-container {
-            width: 60px;
-            height: 60px;
-        }
-        .logo-placeholder {
-            width: 60px;
-            height: 60px;
-            font-size: 1.5rem;
-        }
-        .header-line {
-            margin-top: 12px;
-        }
-    }
-    
+
     /* Маленькие мобильные */
     @media (max-width: 480px) {
         .header-main {
             padding: 8px 10px;
+            padding: 8px 5px !important;
         }
-        
         .text-inside-header {
             font-size: 1.4rem;
         }
-        
         .header-subtitle {
             font-size: 0.8rem;
         }
-        
         .logo-container {
             width: 50px;
             height: 50px;
         }
-        
         .logo-placeholder {
             width: 50px;
             height: 50px;
             font-size: 1.2rem;
         }
-        
         .header-line {
             margin-top: 10px;
         }
-    }
-    
+    }   
+}
     /* Большие экраны */
     @media (min-width: 1440px) {
         .header-content {
             max-width: 1400px;
         }
-        
         .text-inside-header {
             font-size: 2.5rem;
         }
-        
         .header-subtitle {
             font-size: 1.1rem;
         }
-        
         .logo-container {
             width: 100px;
             height: 100px;
         }
-        
         .logo-placeholder {
             width: 100px;
             height: 100px;
             font-size: 2.5rem;
         }
     }
-    
     /* Анимации */
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(-10px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    
     .header-main {
         animation: fadeIn 0.6s ease-out;
-    }
-    
-    /* Поддержка темной/светлой темы */
-    @media (prefers-color-scheme: light) {
-        .header-main {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        }
-        
-        .text-inside-header {
-            color: #2c3e50;
-            text-shadow: 0 0 5px rgba(0,0,0,0.1);
-        }
-        
-        .header-subtitle {
-            color: #6c757d;
-        }
-        
-        .header-img {
-            border-color: #dee2e6;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        
-        .logo-placeholder {
-            background: linear-gradient(45deg, #adb5bd, #ced4da);
-            color: #495057;
-            border-color: #dee2e6;
-        }
     }
 </style>
 
@@ -283,7 +249,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const headerImage = document.querySelector('.header-img');
     const logoContainer = document.querySelector('.logo-container');
-    
     // Проверка загрузки изображения
     if (headerImage) {
         headerImage.onerror = function() {
@@ -292,7 +257,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 logoContainer.innerHTML += '<div class="logo-placeholder">G</div>';
             }
         };
-        
         // Если изображение не загружено сразу
         if (!headerImage.complete || headerImage.naturalHeight === 0) {
             headerImage.onerror();
@@ -304,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (header) {
         header.style.opacity = '0';
         setTimeout(() => {
-            header.style.transition = 'opacity 0.6s ease-out';
+            header.style.transition = 'opacity 1.6s ease-out';
             header.style.opacity = '1';
         }, 100);
     }

@@ -3,7 +3,6 @@
 {{ template "side_bar" }}
 
 <link rel="stylesheet" href="/static/styles.css">
-
 <body>
     <div class="contacts-main">
         <div class="contacts-text">
@@ -22,7 +21,7 @@
     <script>
         let reconnectAttempts = 0;
         // const socket = new WebSocket("ws://localhost:8080/ws");
-        const socket = new WebSocket("wss://genesis.cloudpub.ru:/ws"); // Использовал через админа в командлайне netsh advfirewall firewall add rule name="WebServer 8080" dir=in action=allow protocol=TCP localport=8080 
+        const socket = new WebSocket("wss://gen.cloudpub.ru:/ws"); // Использовал через админа в командлайне netsh advfirewall firewall add rule name="WebServer 8080" dir=in action=allow protocol=TCP localport=8080 
         const messagesContainer = document.getElementById("messages");
         const messageInput = document.getElementById("messageInput");
         const userStatus = document.getElementById("userStatus");
@@ -94,7 +93,6 @@
         margin-left: 0;
         transition: margin-left 0.3s ease;
     }
-    
     .contacts-text {
         color: white;
         text-shadow: 0 0 5px;
@@ -106,7 +104,6 @@
         max-width: 100%;
         box-sizing: border-box;
     }
-
     .chat-header {
         display: flex;
         justify-content: center;
@@ -115,13 +112,11 @@
         margin-bottom: 20px;
         position: relative;
     }
-
     .chat-title {
         font-size: 1.8rem;
         margin: 0;
         text-align: center;
     }
-
     .menu-toggle-btn {
         display: none;
         background: none;
@@ -133,16 +128,13 @@
         cursor: pointer;
         background-color: #444;
     }
-
     .menu-toggle-btn:hover {
         background-color: #555;
     }
-
     #userStatus {
         margin-bottom: 15px;
         font-size: 1.1rem;
     }
-
     .username-input {
         width: 100%;
         max-width: 300px;
@@ -155,7 +147,6 @@
         box-sizing: border-box;
         font-size: 14px;
     }
-
     .messages {
         background-color: #5e5050;
         overflow-y: auto;
@@ -171,7 +162,6 @@
         box-sizing: border-box;
         word-wrap: break-word;
     }
-
     .input-area {
         display: flex;
         gap: 12px;
@@ -180,7 +170,6 @@
         max-width: 700px;
         margin: 0 auto;
     }
-
     .message-input {
         flex: 1;
         padding: 12px;
@@ -191,7 +180,6 @@
         font-size: 14px;
         min-width: 0;
     }
-
     .send-btn {
         background-color: #444547;
         color: white;
@@ -199,109 +187,146 @@
         border-radius: 8px;
         cursor: pointer;
         padding: 12px 25px;
-        min-width: 80px;
+        min-width: 0;
         font-size: 14px;
         transition: background-color 0.2s;
     }
-
     .send-btn:hover {
         background-color: #909090;
     }
-
     .messages::-webkit-scrollbar {
         width: 8px;
     }
-
     .messages::-webkit-scrollbar-track {
         background: #353535;
         border-radius: 4px;
     }
-
     .messages::-webkit-scrollbar-thumb {
         background: #7b7b7b;
         border-radius: 4px;
     }
-
     /* Мобильная версия */
-    @media (max-width: 1024px) {
-        .menu-toggle-btn {
-            display: block;
+        @media screen and (max-width: 720px) and (max-height: 1600px) {
+            .contacts-main {
+                padding: 10px;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                width: 100%;
+            }
+            .message-input{
+                width: 100%;
+                flex: 0;
+            }
+            .contacts-text {
+                padding: 10px 5px;
+                font-size: 16px;
+                width: 100%;
+                margin: 0;
+            }
+            .chat-header {
+                padding: 0 5px;
+            }
+            .chat-title {
+                font-size: 1.4rem;
+                padding: 0 10px;
+            }
+            .messages {
+                padding: 12px;
+                min-height: 200px;
+                max-height: 45vh;
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
+            }
+            .input-area {
+                padding: 0 5px;
+            }
+            .username-input, 
+            .message-input, 
+            .send-btn {
+                font-size: 15px;
+                /* padding: 12px; */
+            }
+            /* Гарантированное центрирование */
+            .contacts-text, 
+            .chat-header, 
+            .messages, 
+            .input-area {
+                margin-left: auto !important;
+                margin-right: auto !important;
+                float: none !important;
+                font-family: Arial, Helvetica, sans-serif;
+                font-weight: 700;
+            }
+            /* Убираем любые возможные смещения */
+            .contacts-main > * {
+                left: 0 !important;
+                right: 0 !important;
+                transform: none !important;
+            }
         }
-        
+        /* Вертикальная ориентация */
+        @media screen and (max-width: 720px) and (orientation: portrait) {
+            .messages {
+                max-height: 40vh;
+            }
+        }
+        /* Горизонтальная ориентация */
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            .messages {
+                max-height: 30vh;
+                min-height: 180px;
+            }
+            .input-area {
+                flex-direction: column;
+            } *
+            .message-input {
+                flex: 1;
+                width: 100%;
+            }
+            .send-btn {
+                flex: 1;
+                width: 0px;
+            }
+        }
+    @media (max-width: 480px) {
         .contacts-text {
-            padding: 15px;
-            font-size: 20px;
+            font-size: 16px;
+            padding: 10px 5px;
         }
-
         .chat-title {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
         }
-
         .messages {
-            max-width: 600px;
-            padding: 15px;
+            padding: 10px;
+            min-height: 180px;
+            max-height: 35vh;
         }
-
-        .input-area {
-            max-width: 600px;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .contacts-text {
-            padding: 12px;
-            font-size: 18px;
-        }
-
-        .chat-title {
-            font-size: 1.3rem;
-        }
-
-        .messages {
-            max-width: 100%;
-            padding: 12px;
-            min-height: 200px;
-            max-height: 45vh;
-        }
-
-        .input-area {
-            flex-direction: column;
-            gap: 10px;
-            max-width: 100%;
-        }
-
+        .username-input,
         .message-input {
-            width: 100%;
-        }
-
-        .send-btn {
-            width: 100%;
-            padding: 15px;
+            padding: 10px;
+            font-size: 13px;
         }
     }
-
     /* Когда меню открыто на мобильных */
     @media (max-width: 1024px) {
         .sidenav.open ~ .contacts-main {
-            margin-left: 280px;
+            margin-right: 280px;
         }
     }
-
     /* Десктоп версия */
     @media (min-width: 1025px) {
         .contacts-main {
-            margin-left: 220px; /* Сдвигаем чат правее */
+            margin-right: 220px; /* Сдвигаем чат правее */
         }
-        
         .contacts-text {
             max-width: 800px;
             margin-left: 0;
         }
-        
         .messages {
             max-width: 750px;
         }
-        
         .input-area {
             max-width: 750px;
         }

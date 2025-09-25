@@ -41,16 +41,16 @@ var (
 	},}
 	clients    = make(map[*Client]bool)
 	clientsMux = &sync.Mutex{}
-	broadcast  = make(chan Message, 100)
+	broadcast  = make(chan Message, 100) // Общий канал 
 )
 
 func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error{
-	return t.templates.ExecuteTemplate(w, name, data)
+	return t.templates.ExecuteTemplate(w, name, data) // Рендер шаблонов 
 }
 
 func main(){
-	initDB()
-	HandleRequests()
+	initDB() // Проверка на базу данных
+	HandleRequests() 
 }
 
 func handleConnections(w http.ResponseWriter, r *http.Request) {
@@ -114,6 +114,12 @@ func registerClient(client *Client) { // Регистрация клиента
 	clientsMux.Lock()
 	defer clientsMux.Unlock()
 	clients[client] = true
+	newClientMessage := Message{ // Уведомление о приходе нового клиента
+		Username: "System",
+		Content: "Пользователь зашел в чат",
+		Time: 	time.Now().Format("15:04"),
+	}	
+	broadcast <- newClientMessage // Отправка сообщения в общий канал
 	log.Printf("Новый клиент подключен. Всего клиентов: %d", len(clients))
 	go client.writePump() // Запуск горутины для отправки сообщений клиенту
 }
@@ -126,12 +132,12 @@ func unregisterClient(client *Client) { // Удаление клиента
 	delete(clients, client)
 	log.Printf("Клиент отключен. Осталось клиентов: %d", len(clients))
 
-	leaveMsg := Message{ // Отправляем уведомление о выходе
+	leaveMsg := Message{ // Отправляем уведомление о выходе клиента
 		Username: "System",
 		Content:  "Пользователь вышел из чата",
 		Time:     time.Now().Format("15:04"),
 	}
-	broadcast <- leaveMsg
+	broadcast <- leaveMsg // Отправка сообщения в общий канал
 	close(client.send)
 }
 
@@ -211,44 +217,43 @@ func HandleRequests(){
 		handleConnections(c.Response(), c.Request())
 		return nil
 	})
-
 	go handleMessages()
 	
 	e.Logger.Fatal(e.Start("0.0.0.0:8080")) // Хост для показа всем интерфейсам
 }
-
-func homePage(c echo.Context) error{ // Домашняя страница
+// Домашняя страница
+func homePage(c echo.Context) error{ 
 	return c.Render(http.StatusOK, "home_page", map[string]interface{}{
 		"Title": "Home page",
 	})
 }
-
-func mainPage(c echo.Context) error{ // Главная страница
+// Главная страница
+func mainPage(c echo.Context) error{ 
 	return c.Render(http.StatusOK, "main_page", map[string]interface{}{
 		"Title": "Main page",
 	})
 }
-
-func aboutPage(c echo.Context) error{ // Страница о самом Месседжере
+// Страница о самом Месседжере
+func aboutPage(c echo.Context) error{ 
 	return c.Render(http.StatusOK, "about_page", map[string]interface{}{
 		"Title": "About",
 	})
 }
-
-func contactsPage(c echo.Context) error{ // Страница чата
+// Страница чата
+func contactsPage(c echo.Context) error{ 
 	return c.Render(http.StatusOK, "contacts_page", map[string]interface{}{
 		"Title": "Chat",
 	})
 }
-
-func showRegPage(c echo.Context) error{ // Функция, показывающая страницу регистрации
+// Функция, показывающая страницу регистрации
+func showRegPage(c echo.Context) error{ 
 	return c.Render(http.StatusOK, "reg_page", map[string]interface{}{
         "Title": "Registration",
         "Error": "", // пустая ошибка по приколу 
     })
 }
-
-func regPage(c echo.Context) error { // Функция для регистрации в Мессенджере
+// Функция для регистрации в Мессенджере
+func regPage(c echo.Context) error { 	
 	if c.Request().Method != http.MethodPost{
 		return c.Redirect(http.StatusFound, "/reg")
 	}
@@ -261,8 +266,9 @@ func regPage(c echo.Context) error { // Функция для регистрац
         })
     }
 	// Проверка инфы с базы даннных 
-	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
+	
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	//conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
 	if err != nil{
 		log.Printf("Error: %v",err)
 		return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
@@ -277,19 +283,17 @@ func regPage(c echo.Context) error { // Функция для регистрац
 		log.Fatal(err)
 	}
 	defer rows.Close()
-
 	var (
 		username string
 		password int
 	)
-	
 	for rows.Next(){
 		err := rows.Scan(&username, &password)
 		if err != nil{
 			log.Fatal(err)
 		}
 		stringPassword := strconv.Itoa(password)
-		if getUsernameReg == username && getPasswordReg == stringPassword{
+		if getUsernameReg == username || getPasswordReg == stringPassword{
 			data := struct{Error string}{Error: "Password or login is already exists"}
 			return c.Render(http.StatusOK, "reg_page", data)
 		}
@@ -297,15 +301,15 @@ func regPage(c echo.Context) error { // Функция для регистрац
 	writeSQL(getUsernameReg, getPasswordReg)
 	return c.Render(http.StatusOK, "reg_page", nil)
 }
-
-func showAuthPage(c echo.Context) error { // Функция, показывающая страницу авторизации
+// Функция, показывающая страницу авторизации
+func showAuthPage(c echo.Context) error { 
 	 return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
         "Title": "Authorization",
         "Error": "", // Пустой шаблон, хз зачем по приколу ахахахах
     })
 }
-
-func authPage(c echo.Context) error{ // Функция для авторизации в Мессенджере
+// Функция для авторизации в Мессенджере
+func authPage(c echo.Context) error{ 
 	if c.Request().Method != http.MethodPost {
         return c.Redirect(http.StatusFound, "/auth")
     }
@@ -313,8 +317,8 @@ func authPage(c echo.Context) error{ // Функция для авторизац
 	getUsernameAuth := c.FormValue("username")
 	getPasswordAuth := c.FormValue("password")
 
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data")
-	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	//conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data")
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
 	if err != nil{
 		log.Printf("Error: %v",err)
 		return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
@@ -353,10 +357,10 @@ func authPage(c echo.Context) error{ // Функция для авторизац
 		"Error": "Wrong password or login",
 	})
 }
-
+// Проверка на наличие базы данных, если ее нет, он ее создает
 func initDB(){
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data")
-	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	//conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data")
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
 	if err != nil{
 		log.Fatalf("%v",err)
 	}
@@ -372,10 +376,10 @@ func initDB(){
 		return
 	}
 }
-
+// Запись информации о клиенте в базу данных
 func writeSQL(username, password string) {
-	// conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // Надо будет закинуть в gitignore и защитить от SQL инъекций, хз не придумал
+	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	//conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // Надо будет закинуть в gitignore и защитить от SQL инъекций, хз не придумал
 	if err != nil{
 		log.Fatal(err)
 	}
