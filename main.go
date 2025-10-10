@@ -2,18 +2,21 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 	"sync"
 	"time"
-	"strconv"
 
+	"github.com/gorilla/websocket"
 	"github.com/jackc/pgx/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/gorilla/websocket"
+	"github.com/joho/godotenv"
 )
 
 type Message struct{
@@ -43,8 +46,8 @@ var (
 	clients    = make(map[*Client]bool)
 	clientsMux = &sync.Mutex{}
 	broadcast  = make(chan Message, 100) // Общий канал 
-
 )
+
 
 // func makeChan(c echo.Context){
 // 	// btnMakeChan := c.FormValue("btnMakeChan")
@@ -56,6 +59,10 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 }
 
 func main(){
+	err := godotenv.Load()
+	if err != nil{
+		log.Println("Can't connect to .env file!")
+	}
 	initDB() // Проверка на базу данных
 	HandleRequests() 
 }
@@ -272,6 +279,13 @@ func regPage(c echo.Context) error {
 	if c.Request().Method != http.MethodPost{
 		return c.Redirect(http.StatusFound, "/reg")
 	}
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", 
+		os.Getenv("USER"),
+		os.Getenv("PASSWORD"),
+		os.Getenv("HOST"),
+		os.Getenv("PORT"),
+		os.Getenv("DB"),
+	)
 	getUsernameReg := c.FormValue("usernameReg")
 	getPasswordReg := c.FormValue("passwordReg")
 	if _, err := strconv.Atoi(getPasswordReg); err != nil {
@@ -282,7 +296,7 @@ func regPage(c echo.Context) error {
     }
 	// Проверка инфы с базы даннных 
 	
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	conn, err := pgx.Connect(context.Background(), connStr)
 	//conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // надо будет закинуть в gitignore и защитить от SQL инъекций, хз
 	if err != nil{
 		log.Printf("Error: %v",err)
@@ -328,12 +342,18 @@ func authPage(c echo.Context) error{
 	if c.Request().Method != http.MethodPost {
         return c.Redirect(http.StatusFound, "/auth")
     }
-
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", 
+		os.Getenv("USER"),
+		os.Getenv("PASSWORD"),
+		os.Getenv("HOST"),
+		os.Getenv("PORT"),
+		os.Getenv("DB"),
+	)
 	getUsernameAuth := c.FormValue("username")
 	getPasswordAuth := c.FormValue("password")
 
 	//conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data")
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	conn, err := pgx.Connect(context.Background(), connStr)
 	if err != nil{
 		log.Printf("Error: %v",err)
 		return c.Render(http.StatusOK, "auth_page", map[string]interface{}{
@@ -375,7 +395,14 @@ func authPage(c echo.Context) error{
 // Проверка на наличие базы данных, если ее нет, он ее создает
 func initDB(){
 	//conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data")
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", 
+		os.Getenv("USER"),
+		os.Getenv("PASSWORD"),
+		os.Getenv("HOST"),
+		os.Getenv("PORT"),
+		os.Getenv("DB"),
+	)
+	conn, err := pgx.Connect(context.Background(), connStr)
 	if err != nil{
 		log.Fatalf("%v",err)
 	}
@@ -393,7 +420,14 @@ func initDB(){
 }
 // Запись информации о клиенте в базу данных
 func writeSQL(username, password string) {
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@localhost:5432/data")
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", 
+		os.Getenv("USER"),
+		os.Getenv("PASSWORD"),
+		os.Getenv("HOST"),
+		os.Getenv("PORT"),
+		os.Getenv("DB"),
+	)
+	conn, err := pgx.Connect(context.Background(), connStr)
 	//conn, err := pgx.Connect(context.Background(), "postgres://postgres:Roflan_2006@postgres:5432/data") // Надо будет закинуть в gitignore и защитить от SQL инъекций, хз не придумал
 	if err != nil{
 		log.Fatal(err)
