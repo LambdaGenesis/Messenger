@@ -20,6 +20,7 @@ type Message struct{
 	Username string `json:"username"`
 	Content string 	`json:"content"`
 	Time string 	`json:"time"`
+	// ID int 			`json:"id"`
 }
 
 type Client struct {
@@ -42,7 +43,13 @@ var (
 	clients    = make(map[*Client]bool)
 	clientsMux = &sync.Mutex{}
 	broadcast  = make(chan Message, 100) // Общий канал 
+
 )
+
+// func makeChan(c echo.Context){
+// 	// btnMakeChan := c.FormValue("btnMakeChan")
+
+// }	
 
 func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error{
 	return t.templates.ExecuteTemplate(w, name, data) // Рендер шаблонов 
@@ -109,8 +116,8 @@ func pingClient(client *Client){
         }
     }
 }
-
-func registerClient(client *Client) { // Регистрация клиента
+// Регистрация клиента
+func registerClient(client *Client) { 
 	clientsMux.Lock()
 	defer clientsMux.Unlock()
 	clients[client] = true
@@ -123,7 +130,8 @@ func registerClient(client *Client) { // Регистрация клиента
 	log.Printf("Новый клиент подключен. Всего клиентов: %d", len(clients))
 	go client.writePump() // Запуск горутины для отправки сообщений клиенту
 }
-func unregisterClient(client *Client) { // Удаление клиента
+// Удаление клиента
+func unregisterClient(client *Client) { 
 	clientsMux.Lock()
 	defer clientsMux.Unlock()
 
@@ -140,8 +148,8 @@ func unregisterClient(client *Client) { // Удаление клиента
 	broadcast <- leaveMsg // Отправка сообщения в общий канал
 	close(client.send)
 }
-
-func (c *Client) writePump() { // Отправка сообщений клиенту
+// Отправка сообщений клиенту
+func (c *Client) writePump() { 
 	for {
 		msg, ok := <-c.send
 			if !ok {
@@ -156,8 +164,8 @@ func (c *Client) writePump() { // Отправка сообщений клиен
 			}
 	}
 }
-
-func handleMessages() {  // Обработчик широковещательных сообщений
+// Обработчик широковещательных сообщений
+func handleMessages() {  
 	for {
 		msg := <-broadcast
 		clientsMux.Lock()
@@ -188,6 +196,7 @@ func HandleRequests(){
 		"templates/footer.html",
 	    "templates/header.html",
 		"templates/contacts_page.html",
+		"templates/channels_page.html",
 		"templates/side_bar.html",
 	    "templates/main_page.html",
 	    "templates/auth_page.html",
@@ -208,10 +217,11 @@ func HandleRequests(){
 	e.GET("/home", homePage)
 	e.GET("/auth", showAuthPage)
 	e.POST("/auth/post", authPage)
+	e.GET("/channs", channelsPage)
 	e.GET("/about", aboutPage)
 	e.POST("/reg/post", regPage)
 	e.GET("/reg", showRegPage)
-	e.GET("/contacts", contactsPage)
+	e.GET("/chat", contactsPage)
 
 	e.GET("/ws", func(c echo.Context) error {
 		handleConnections(c.Response(), c.Request())
@@ -237,6 +247,11 @@ func mainPage(c echo.Context) error{
 func aboutPage(c echo.Context) error{ 
 	return c.Render(http.StatusOK, "about_page", map[string]interface{}{
 		"Title": "About",
+	})
+}
+func channelsPage(c echo.Context) error{
+	return c.Render(http.StatusOK, "channels_page", map[string]interface{}{
+		"Title": "Contacts",
 	})
 }
 // Страница чата
