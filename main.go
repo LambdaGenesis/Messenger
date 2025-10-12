@@ -23,7 +23,6 @@ type Message struct{
 	Username string `json:"username"`
 	Content string 	`json:"content"`
 	Time string 	`json:"time"`
-	// ID int 			`json:"id"`
 }
 
 type Client struct {
@@ -132,6 +131,8 @@ func registerClient(client *Client) {
 		Username: "System",
 		Content: "Пользователь зашел в чат",
 		Time: 	time.Now().Format("15:04"),
+
+		// ID: true,
 	}	
 	broadcast <- newClientMessage // Отправка сообщения в общий канал
 	log.Printf("Новый клиент подключен. Всего клиентов: %d", len(clients))
@@ -151,6 +152,8 @@ func unregisterClient(client *Client) {
 		Username: "System",
 		Content:  "Пользователь вышел из чата",
 		Time:     time.Now().Format("15:04"),
+
+		// ID: true,
 	}
 	broadcast <- leaveMsg // Отправка сообщения в общий канал
 	close(client.send)

@@ -11,7 +11,9 @@
             </div>
             <div id="userStatus">Статус: <span id="status">Подключение...</span></div>
             <input type="text" id="usernameInput" placeholder="Введите ваше имя:" class="username-input">
+
             <div id="messages" class="messages"></div>
+
             <div class="input-area">
                 <input type="text" id="messageInput" placeholder="Введите сообщение..." autocomplete="off" class="message-input">
                 <button onclick="sendMessage()" class="send-btn">Send</button>
@@ -20,7 +22,7 @@
     </div>
     <script>
         let reconnectAttempts = 0;
-        // const socket = new WebSocket("ws://localhost:8080/ws");
+        let currentUsername = "";
         const socket = new WebSocket("wss://gen.cloudpub.ru:/ws"); // Использовал через админа в командлайне netsh advfirewall firewall add rule name="WebServer 8080" dir=in action=allow protocol=TCP localport=8080 
         const messagesContainer = document.getElementById("messages");
         const messageInput = document.getElementById("messageInput");
@@ -28,6 +30,10 @@
         const status = document.getElementById("status");
         const usernameInput = document.getElementById("usernameInput");
         
+        usernameInput.addEventListener("input", function() {
+            currentUsername = usernameInput.value.trim();
+        });
+    
         socket.onopen = function(event) {
             userStatus.textContent = "Подключено";
             userStatus.style.color = "green";
@@ -45,14 +51,21 @@
             setTimeout(reconnect, Math.min(3000, reconnectAttempts * 1000));
             reconnectAttempts++;
         };
-         socket.onerror = function(error) {
+        socket.onerror = function(error) {
             userStatus.textContent = "Ошибка";
             userStatus.style.color = "orange";
             addMessage("System", "Connection error", new Date().toLocaleTimeString());
         };
+
         function sendMessage() {
             const message = messageInput.value.trim();
             const username = usernameInput.value.trim();
+
+            if (!username){
+                alert("Введите ваше имя!");
+                usernameInput.focus();
+                return;
+            };
             if (socket.readyState != WebSocket.OPEN){
                 addMessage("System", "Соединение не установлено", new Date().toLocaleTimeString());
                 return;
@@ -67,15 +80,38 @@
                 messageInput.value = "";
             }
         }
+
         function addMessage(username, content, time) {
             const messageElement = document.createElement("div");
+            const isMyMessage = username === currentUsername;
             messageElement.classList.add("message");
+
             if (username === "System") {
                 messageElement.classList.add("system-message");
                 messageElement.innerHTML = `<em>${content}</em>`;
+            } else if (isMyMessage) {
+                messageElement.classList.add("my-message");
+                messageElement.innerHTML = `
+                    <div class="message-content my-content">
+                        <div class="message-info">
+                            <span class="message-time">${time}</span>
+                            <strong class="message-username">${username}</strong>
+                        </div>
+                        <div class="message-text">${content}</div>
+                    </div>
+                `;
             } else {
-                messageElement.innerHTML = `<strong>${username}</strong> (${time}): ${content}`;
-            }   
+                messageElement.classList.add("other-message");
+                messageElement.innerHTML = `
+                    <div class="message-content other-content">
+                        <div class="message-info">
+                            <strong class="message-username">${username}</strong>
+                            <span class="message-time">${time}</span>
+                        </div>
+                        <div class="message-text">${content}</div>
+                    </div>
+                `;
+            }
             messagesContainer.appendChild(messageElement);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
@@ -147,28 +183,37 @@
         box-sizing: border-box;
         font-size: 14px;
     }
+    .message {
+        display: flex;
+        max-width: 100%;
+    }     
     .messages {
         background-color: #5e5050;
         overflow-y: auto;
+        overflow-x: hidden;
         min-height: 250px;
         max-height: 50vh;
         border-radius: 12px;
         border: 2px solid #6c6262;
         padding: 20px;
+
+        display: flex;
+        flex-direction: column;
         margin: 0 auto 20px auto;
+        
         width: 100%;
         max-width: 700px;
-        padding-left: 60%;
-        box-sizing: border-box;
+        /* box-sizing: border-box; */
         word-wrap: break-word;
+        gap: 15px;
     }
     .input-area {
         display: flex;
-        gap: 12px;
+        gap: 10px;
         margin-top: 20px;
         width: 100%;
-        max-width: 700px;
-        margin: 0 auto;
+        /* max-width: 700px; */
+        /* margin: 0 auto; */
     }
     .message-input {
         flex: 1;
@@ -178,29 +223,76 @@
         background-color: #5e5050;
         color: white;
         font-size: 14px;
-        min-width: 0;
+        /* max-width: 440px; */
+        /* min-width: 0; */
     }
+
+    /* Мои сообщения (справа) */
+    .my-message {
+        justify-content: flex-end;
+    }
+
+    .my-content {
+        color: white;
+        border-radius: 10px;
+        word-wrap: break-word;
+        padding: 5px 5px;
+        max-width: 50%;
+    }
+    .my-content .message-info {
+        flex-direction: row-reverse;
+    }
+    .my-content .message-username {
+        font-weight: bold;
+        margin-left: 10px;
+    }
+
+     /* Чужие сообщения (слева) */
+    .other-message {
+        /* justify-content: flex-start; */
+        left: 100%;
+    }
+    .other-content {
+        color: white;
+        border-bottom-left-radius: 5px;
+        border-radius: 10px;
+        word-wrap: break-word;
+        padding: 5px 5px;
+        max-width: 50%;
+    }
+    
+    .other-content .message-username {
+        font-weight: bold;
+        margin-right: 10px;
+    }
+    .other-content .message-info {
+        flex-direction: row;
+    }
+
     .send-btn {
         background-color: #444547;
         color: white;
         border: none;
         border-radius: 8px;
         cursor: pointer;
-        padding: 12px 25px;
-        min-width: 0;
+        /* padding: 12px 25px; */
+        /* min-width: 0; */
         font-size: 14px;
         transition: background-color 0.2s;
     }
     .send-btn:hover {
         background-color: #909090;
     }
+
     .messages::-webkit-scrollbar {
         width: 8px;
     }
+
     .messages::-webkit-scrollbar-track {
         background: #353535;
         border-radius: 4px;
     }
+
     .messages::-webkit-scrollbar-thumb {
         background: #7b7b7b;
         border-radius: 4px;
@@ -216,7 +308,7 @@
             }
             .message-input{
                 width: 100%;
-                flex: 0;
+                max-width: 285px;
             }
             .contacts-text {
                 padding: 10px 5px;
@@ -241,12 +333,19 @@
             }
             .input-area {
                 padding: 0 5px;
+                flex: 0;
             }
             .username-input, 
             .message-input, 
             .send-btn {
                 font-size: 15px;
-                /* padding: 12px; */
+                padding: 12px;
+                flex: 0;
+                
+            }
+            .send-btn{
+                max-width: 315px;
+                width: 100%;
             }
             /* Гарантированное центрирование */
             .contacts-text, 
@@ -307,6 +406,8 @@
         .message-input {
             padding: 10px;
             font-size: 13px;
+
+            /* max-width: 200px; */
         }
     }
     /* Когда меню открыто на мобильных */
@@ -319,16 +420,23 @@
     @media (min-width: 1025px) {
         .contacts-main {
             margin-right: 220px; /* Сдвигаем чат правее */
+            margin-left: 0; /* Добавьте это */
         }
         .contacts-text {
             max-width: 800px;
             margin-left: 0;
+            margin-left: auto; /* Измените на auto */
+            margin-right: auto; /* Добавьте это */
         }
         .messages {
             max-width: 750px;
+            margin-left: auto; /* Добавьте это */
+            margin-right: auto; /* Добавьте это */
         }
         .input-area {
             max-width: 750px;
+            margin-left: auto; /* Добавьте это */
+            margin-right: auto; /* Добавьте это */
         }
     }
 </style>
