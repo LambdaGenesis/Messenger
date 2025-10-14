@@ -1,78 +1,74 @@
-{{ define "reg_page" }}
+{{ define "auth_page" }}
 {{ template "header" }}
 
-<link rel="stylesheet" href="/static/styles.css">
+<link rel="stylesheet" href="/web/static/styles.css">
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1 class="auth-title">Enter an account</h1>
+            <p class="auth-subtitle">Welcome back to Genesis Messenger</p>
+        </div>
 
-<body>
-    <div class="reg-container">
-        <div class="reg-card">
-            <div class="reg-header">
-                <h1 class="reg-title">Create Account</h1>
-                <p class="reg-subtitle">Join Genesis Messenger community</p>
+        {{ if .Error }}
+        <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            {{ .Error }}
+        </div>
+        {{ end }}
+
+        <form action="/auth/post" method="post" class="auth-form">
+            <div class="form-group">
+                <label for="username" class="form-label">Login:</label>
+                <input type="text" id="username" name="username" class="form-input" required 
+                       placeholder="Enter your username">
+                <span class="input-icon">👤</span>
             </div>
 
-            {{ if .Error }}
-            <div class="error-message">
-                <span class="error-icon">⚠️</span>
-                {{ .Error }}
-            </div>
-            {{ end }}
-
-            <form action="/reg/post" method="post" class="reg-form">
-                <div class="form-group">
-                    <label for="usernameReg" class="form-label">Username:</label>
-                    <input type="text" id="usernameReg" name="usernameReg" class="form-input" required 
-                           placeholder="Choose your username" minlength="3" maxlength="50">
-                    <span class="input-icon">👤</span>
-                    <div class="input-hint">3-50 characters</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="passwordReg" class="form-label">Password:</label>
-                    <input type="password" id="passwordReg" name="passwordReg" class="form-input" required 
-                           placeholder="Create strong password" minlength="6">
-                    <span class="input-icon">🔒</span>
-                    <div class="input-hint">Minimum 6 characters</div>
-                </div> 
-
-                <button type="submit" class="reg-button primary-button">
-                    <span class="button-icon">🚀</span>
-                    Create Account
-                </button>   
-            </form>
-
+            <div class="form-group">
+                <label for="password" class="form-label">Password:</label>
+                <input type="password" id="password" name="password" class="form-input" required 
+                       placeholder="Enter your password">
+                <span class="input-icon">🔒</span>
+            </div> 
+            
+            <button type="submit" class="auth-button primary-button">
+                <span class="button-icon">🚀</span>
+                Enter
+            </button>   
+            
             <div class="divider">
                 <span class="divider-line"></span>
                 <span class="divider-text">or</span>
                 <span class="divider-line"></span>
             </div>
-
-            <form action="/auth" method="get" class="back-form">
-                <p class="back-text">Already have an account?</p>
-                <button type="submit" class="reg-button secondary-button">
-                    <span class="button-icon">↩️</span>
-                    Back to Login
-                </button>
-            </form>
-
-            <div class="reg-footer">
-                <p class="footer-text">Secure registration with WebSocket technology</p>
-            </div>
+        </form>
+        
+        <form action="/reg" method="get" class="register-form">
+            <p class="register-text">Don't have an account?</p>
+            <button type="submit" class="auth-button secondary-button">
+                <span class="button-icon">⭐</span>
+                Create Account
+            </button>
+        </form>
+        
+        <div class="auth-footer">
+            <p class="footer-text">Secure WebSocket Authentication</p>
         </div>
     </div>
-</body>
+</div>
 
 <style>
-    .reg-container {
+    .auth-container {
         min-height: calc(100vh - 200px);
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 40px 20px;
         background: linear-gradient(135deg, #2c2c2f 0%, #242424 50%, #1e1c1c 100%);
+        
     }
     
-    .reg-card {
+    .auth-card {
         background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(10px);
         border-radius: 20px;
@@ -83,12 +79,12 @@
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
     
-    .reg-header {
+    .auth-header {
         text-align: center;
         margin-bottom: 30px;
     }
     
-    .reg-title {
+    .auth-title {
         color: white;
         font-size: 2.2rem;
         margin: 0 0 10px 0;
@@ -96,7 +92,7 @@
         font-weight: 300;
     }
     
-    .reg-subtitle {
+    .auth-subtitle {
         color: #ccc;
         font-size: 1rem;
         margin: 0;
@@ -118,8 +114,8 @@
         margin-right: 8px;
     }
     
-    .reg-form {
-        margin-bottom: 25px;
+    .auth-form {
+        margin-bottom: 30px;
     }
     
     .form-group {
@@ -167,14 +163,7 @@
         opacity: 0.6;
     }
     
-    .input-hint {
-        color: #888;
-        font-size: 0.8rem;
-        margin-top: 5px;
-        margin-left: 5px;
-    }
-    
-    .reg-button {
+    .auth-button {
         width: 100%;
         padding: 16px;
         border: none;
@@ -197,7 +186,7 @@
     .primary-button:hover {
         background: linear-gradient(135deg, #b6b7bc, #5c5c5c);
         transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(76, 201, 240, 0.4);
+        box-shadow: 0 25px 25px rgba(253, 253, 253, 0.6);
     }
     
     .secondary-button {
@@ -231,18 +220,18 @@
         text-transform: uppercase;
     }
     
-    .back-form {
+    .register-form {
         text-align: center;
-        margin-bottom: 20px;
     }
     
-    .back-text {
+    .register-text {
         color: #ccc;
         margin-bottom: 15px;
         font-size: 0.9rem;
     }
     
-    .reg-footer {
+    .auth-footer {
+        margin-top: 30px;
         text-align: center;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         padding-top: 20px;
@@ -256,16 +245,16 @@
     
     /* Планшеты */
     @media (max-width: 1024px) {
-        .reg-container {
+        .auth-container {
             padding: 30px 15px;
         }
         
-        .reg-card {
+        .auth-card {
             padding: 35px;
             max-width: 400px;
         }
         
-        .reg-title {
+        .auth-title {
             font-size: 2rem;
         }
         
@@ -276,21 +265,21 @@
     
     /* Мобильные устройства */
     @media (max-width: 768px) {
-        .reg-container {
+        .auth-container {
             padding: 20px 12px;
             min-height: calc(100vh - 150px);
         }
         
-        .reg-card {
+        .auth-card {
             padding: 30px 25px;
             border-radius: 16px;
         }
         
-        .reg-title {
+        .auth-title {
             font-size: 1.8rem;
         }
         
-        .reg-subtitle {
+        .auth-subtitle {
             font-size: 0.9rem;
         }
         
@@ -299,7 +288,7 @@
             font-size: 0.9rem;
         }
         
-        .reg-button {
+        .auth-button {
             padding: 14px;
             font-size: 1rem;
         }
@@ -312,20 +301,20 @@
     
     /* Маленькие мобильные */
     @media (max-width: 480px) {
-        .reg-container {
+        .auth-container {
             padding: 15px 10px;
         }
         
-        .reg-card {
+        .auth-card {
             padding: 25px 20px;
             border-radius: 14px;
         }
         
-        .reg-title {
+        .auth-title {
             font-size: 1.6rem;
         }
         
-        .reg-header {
+        .auth-header {
             margin-bottom: 25px;
         }
         
@@ -335,10 +324,10 @@
         
         .form-input {
             padding: 12px 35px 12px 12px;
-            font-size: 16px;
+            font-size: 16px; /* Предотвращает zoom в iOS */
         }
         
-        .reg-button {
+        .auth-button {
             padding: 14px;
         }
         
@@ -346,20 +335,16 @@
             padding: 12px;
             font-size: 0.85rem;
         }
-        
-        .input-hint {
-            font-size: 0.75rem;
-        }
     }
     
     /* Большие экраны */
     @media (min-width: 1440px) {
-        .reg-card {
+        .auth-card {
             max-width: 500px;
             padding: 50px;
         }
         
-        .reg-title {
+        .auth-title {
             font-size: 2.5rem;
         }
         
@@ -368,7 +353,7 @@
             font-size: 1.1rem;
         }
         
-        .reg-button {
+        .auth-button {
             padding: 18px;
             font-size: 1.2rem;
         }
@@ -386,17 +371,8 @@
         }
     }
     
-    .reg-card {
+    .auth-card {
         animation: fadeInUp 0.6s ease-out;
-    }
-    
-    /* Подсказки при валидации */
-    .form-input:invalid:not(:focus):not(:placeholder-shown) {
-        border-color: #ff6b6b;
-    }
-    
-    .form-input:valid:not(:focus):not(:placeholder-shown) {
-        border-color: #51cf66;
     }
 </style>
 
