@@ -196,14 +196,12 @@
         border-radius: 12px;
         border: 2px solid #6c6262;
         padding: 20px;
-
         display: flex;
         flex-direction: column;
         margin: 0 auto 20px auto;
         
         width: 100%;
         max-width: 700px;
-        /* box-sizing: border-box; */
         word-wrap: break-word;
         gap: 15px;
     }
@@ -212,8 +210,6 @@
         gap: 10px;
         margin-top: 20px;
         width: 100%;
-        /* max-width: 700px; */
-        /* margin: 0 auto; */
     }
     .message-input {
         flex: 1;
@@ -249,7 +245,6 @@
 
      /* Чужие сообщения (слева) */
     .other-message {
-        /* justify-content: flex-start; */
         left: 100%;
     }
     .other-content {
@@ -275,8 +270,7 @@
         border: none;
         border-radius: 8px;
         cursor: pointer;
-        /* padding: 12px 25px; */
-        /* min-width: 0; */
+       
         font-size: 14px;
         transition: background-color 0.2s;
     }
@@ -347,7 +341,6 @@
                 max-width: 315px;
                 width: 100%;
             }
-            /* Гарантированное центрирование */
             .contacts-text, 
             .chat-header, 
             .messages, 
@@ -358,20 +351,19 @@
                 font-family: Arial, Helvetica, sans-serif;
                 font-weight: 700;
             }
-            /* Убираем любые возможные смещения */
+
             .contacts-main > * {
                 left: 0 !important;
                 right: 0 !important;
                 transform: none !important;
             }
         }
-        /* Вертикальная ориентация */
+     
         @media screen and (max-width: 720px) and (orientation: portrait) {
             .messages {
                 max-height: 40vh;
             }
         }
-        /* Горизонтальная ориентация */
         @media screen and (max-height: 500px) and (orientation: landscape) {
             .messages {
                 max-height: 30vh;
@@ -406,8 +398,6 @@
         .message-input {
             padding: 10px;
             font-size: 13px;
-
-            /* max-width: 200px; */
         }
     }
     /* Когда меню открыто на мобильных */
@@ -418,25 +408,27 @@
     }
     /* Десктоп версия */
     @media (min-width: 1025px) {
+        .sidenav.open ~ .contacts-main {
+            margin-right: 200px;
+        }
         .contacts-main {
-            margin-right: 220px; /* Сдвигаем чат правее */
-            margin-left: 0; /* Добавьте это */
+            margin-left: 0; 
         }
         .contacts-text {
             max-width: 800px;
             margin-left: 0;
-            margin-left: auto; /* Измените на auto */
-            margin-right: auto; /* Добавьте это */
+            margin-left: auto; 
+            margin-right: auto; 
         }
         .messages {
             max-width: 750px;
-            margin-left: auto; /* Добавьте это */
-            margin-right: auto; /* Добавьте это */
+            margin-left: auto; 
+            margin-right: auto; 
         }
         .input-area {
             max-width: 750px;
-            margin-left: auto; /* Добавьте это */
-            margin-right: auto; /* Добавьте это */
+            margin-left: auto; 
+            margin-right: auto; 
         }
     }
 </style>

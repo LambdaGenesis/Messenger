@@ -23,6 +23,7 @@
         z-index: 1000;
         top: 0;
         right: -250px; /* Скрыто за экраном справа */
+        /* right: -250px;  */
         background-color: #111; 
         overflow-x: hidden;
         padding-top: 60px;
@@ -87,8 +88,8 @@
         }
         .sidenav {
             width: 280px;
-            right: -280px; /* Скрыто справа */
-            left: auto; /* Сбрасываем left */
+            right: -280px; 
+            left: auto; 
             overflow-x: hidden;
         }
         .sidenav a {
@@ -129,7 +130,7 @@
     @media screen and (max-width: 480px) {
         .sidenav {
             width: 100%;
-            right: -100%; /* Скрыто справа */
+            right: -100%; 
             left: auto;
         }
         .sidenav a {
@@ -141,7 +142,7 @@
         }
         .menu-btn {
             top: 10px;
-            right: 10px; /* Правый угол */
+            right: 10px; 
             left: auto;
             padding: 12px 18px;
             font-size: 20px;
@@ -152,7 +153,7 @@
     @media screen and (min-width: 769px) and (max-width: 1024px) {
         .sidenav {
             width: 300px;
-            right: -300px; /* Скрыто справа */
+            right: -300px; 
             left: auto;
         }
     }
@@ -160,16 +161,21 @@
     /* Десктоп - всегда видимо справа */
     @media screen and (min-width: 1025px) {
         .sidenav {
-            width: 200px;
-            right: 0; /* Постоянно справа */
+            width: 250px;
             left: auto;
             margin-left: 100px;
         }
-        
-        .menu-btn {
-            display: none;
+
+        .sidenav.open {
+            right: 0; 
+            left: auto;
+            box-shadow: -10px 0 15px rgba(0,0,0,0.5); 
         }
-        /* Сдвигаем основной контент чтобы не перекрывалось */
+
+        .menu-btn {
+            /* display: none; */
+            display: block;
+        }
         body {
             margin-right: 50px !important;
         }
